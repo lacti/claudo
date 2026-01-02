@@ -25,7 +25,7 @@ jq --version
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/user/claudo.git ~/git/claudo
+git clone https://github.com/lacti/claudo.git ~/git/claudo
 cd ~/git/claudo
 ```
 

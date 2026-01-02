@@ -25,7 +25,7 @@
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/user/claudo.git
+git clone https://github.com/lacti/claudo.git
 cd claudo
 
 # 2. Install (first time only)
