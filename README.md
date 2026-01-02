@@ -14,13 +14,14 @@ Claude Code의 Hooks와 Commands를 개발하고 관리하기 위한 프로젝�
 
 ### Commands
 
-| Command        | 설명                                         |
-| -------------- | -------------------------------------------- |
-| `/do-plan`     | 기능 구현을 위한 계획 수립 및 작업 파일 생성 |
-| `/do-task`     | 다음 작업을 자동으로 식별하고 실행           |
-| `/do-commit`   | 변경점을 분석하여 git commit 생성            |
-| `/do-progress` | checklist.md 기반 진행률 표시                |
-| `/do-deploy`   | DEPLOY.md를 읽고 배포 프로세스 실행          |
+| Command        | 설명                                             |
+| -------------- | ------------------------------------------------ |
+| `/do-plan`     | 기능 구현을 위한 계획 수립 및 작업 파일 생성     |
+| `/do-todo`     | Plan mode 검토 완료된 계획을 TODO 파일로 변환    |
+| `/do-task`     | 다음 작업을 자동으로 식별하고 실행               |
+| `/do-commit`   | 변경점을 분석하여 git commit 생성                |
+| `/do-progress` | checklist.md 기반 진행률 표시                    |
+| `/do-deploy`   | DEPLOY.md를 읽고 배포 프로세스 실행              |
 
 ## 빠른 시작
 

@@ -26,6 +26,11 @@
       "name": "do-deploy",
       "file": "~/.claude/commands/do-deploy.md",
       "description": "배포 지시 파일(DEPLOY.md)을 읽고 배포 프로세스 실행"
+    },
+    {
+      "name": "do-todo",
+      "file": "~/.claude/commands/do-todo.md",
+      "description": "Plan mode 검토 완료된 계획을 TODO 작업 파일로 변환"
     }
   ],
   "hooks": {
