@@ -7,6 +7,10 @@ argument-hint: <feature-name>
 
 # Auto Task Execution
 
+## 0. Update Session Phase
+Read `.claude/.do-session` and update `phase` to `"executing"` if it's `"planning"`.
+This enables the quality gate hook for checklist verification on session end.
+
 ## 1. Load Context
 - `@CLAUDE.md` - coding conventions
 - `@TODO/$1/PLAN.md` - plan

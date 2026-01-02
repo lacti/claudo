@@ -3,17 +3,31 @@ import sys
 import os
 import glob
 import re
+import json
 
 """
 Hook: Stop
 Role: Quality Gate
 Description: Verifies all items in checklist.md are checked before conversation ends.
-Only active when a do-* workflow session exists (.claude/.do-session).
+Only active when a do-* workflow session exists (.claude/.do-session) and phase is 'executing'.
 """
 
+def get_session_phase():
+    """Get the current session phase. Returns None if no session or phase."""
+    session_path = ".claude/.do-session"
+    if not os.path.exists(session_path):
+        return None
+    try:
+        with open(session_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return data.get("phase")
+    except (json.JSONDecodeError, IOError):
+        return None
+
 def is_do_session_active():
-    """Check if do-* workflow session is active."""
-    return os.path.exists(".claude/.do-session")
+    """Check if do-* workflow session is active and in executing phase."""
+    phase = get_session_phase()
+    return phase == "executing"
 
 def find_active_checklist():
     todo_dirs = glob.glob("TODO/*/")

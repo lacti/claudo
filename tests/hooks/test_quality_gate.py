@@ -8,6 +8,80 @@ import pytest
 from tests.utils import import_hook
 
 
+class TestGetSessionPhase:
+    """Unit tests for get_session_phase function."""
+
+    @pytest.fixture
+    def module(self, hooks_dir):
+        return import_hook(hooks_dir / "quality_gate.py")
+
+    def test_returns_none_when_no_session(self, module, tmp_path, monkeypatch):
+        """Should return None when no .do-session file exists."""
+        monkeypatch.chdir(tmp_path)
+        assert module.get_session_phase() is None
+
+    def test_returns_phase_from_session(self, module, tmp_path, monkeypatch):
+        """Should return phase from .do-session file."""
+        session_dir = tmp_path / ".claude"
+        session_dir.mkdir(parents=True)
+        (session_dir / ".do-session").write_text('{"phase": "executing"}')
+        monkeypatch.chdir(tmp_path)
+        assert module.get_session_phase() == "executing"
+
+    def test_returns_planning_phase(self, module, tmp_path, monkeypatch):
+        """Should return planning phase from .do-session file."""
+        session_dir = tmp_path / ".claude"
+        session_dir.mkdir(parents=True)
+        (session_dir / ".do-session").write_text('{"phase": "planning"}')
+        monkeypatch.chdir(tmp_path)
+        assert module.get_session_phase() == "planning"
+
+    def test_returns_none_for_invalid_json(self, module, tmp_path, monkeypatch):
+        """Should return None for invalid JSON in .do-session."""
+        session_dir = tmp_path / ".claude"
+        session_dir.mkdir(parents=True)
+        (session_dir / ".do-session").write_text("not valid json")
+        monkeypatch.chdir(tmp_path)
+        assert module.get_session_phase() is None
+
+    def test_returns_none_for_missing_phase(self, module, tmp_path, monkeypatch):
+        """Should return None when phase key is missing."""
+        session_dir = tmp_path / ".claude"
+        session_dir.mkdir(parents=True)
+        (session_dir / ".do-session").write_text('{"feature": "test"}')
+        monkeypatch.chdir(tmp_path)
+        assert module.get_session_phase() is None
+
+
+class TestIsDoSessionActive:
+    """Unit tests for is_do_session_active function."""
+
+    @pytest.fixture
+    def module(self, hooks_dir):
+        return import_hook(hooks_dir / "quality_gate.py")
+
+    def test_inactive_when_no_session(self, module, tmp_path, monkeypatch):
+        """Should return False when no session file."""
+        monkeypatch.chdir(tmp_path)
+        assert module.is_do_session_active() is False
+
+    def test_inactive_when_planning_phase(self, module, tmp_path, monkeypatch):
+        """Should return False when phase is planning."""
+        session_dir = tmp_path / ".claude"
+        session_dir.mkdir(parents=True)
+        (session_dir / ".do-session").write_text('{"phase": "planning"}')
+        monkeypatch.chdir(tmp_path)
+        assert module.is_do_session_active() is False
+
+    def test_active_when_executing_phase(self, module, tmp_path, monkeypatch):
+        """Should return True when phase is executing."""
+        session_dir = tmp_path / ".claude"
+        session_dir.mkdir(parents=True)
+        (session_dir / ".do-session").write_text('{"phase": "executing"}')
+        monkeypatch.chdir(tmp_path)
+        assert module.is_do_session_active() is True
+
+
 class TestFindActiveChecklist:
     """Unit tests for find_active_checklist function."""
 
@@ -141,3 +215,18 @@ class TestQualityGateIntegration:
             cwd=incomplete_checklist.parent.parent,
         )
         assert "Checklist verification failed" in result.stdout
+
+    def test_planning_phase_exits_zero(
+        self, hook_path, planning_phase_checklist, monkeypatch
+    ):
+        """Should exit 0 when in planning phase even with incomplete items."""
+        monkeypatch.chdir(planning_phase_checklist.parent.parent)
+        result = subprocess.run(
+            [sys.executable, str(hook_path)],
+            capture_output=True,
+            text=True,
+            cwd=planning_phase_checklist.parent.parent,
+        )
+        # Should exit 0 because phase is 'planning', not 'executing'
+        assert result.returncode == 0
+        assert "[Quality Gate]" not in result.stderr

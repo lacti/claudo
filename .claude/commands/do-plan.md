@@ -2,14 +2,15 @@
 description: Create implementation plan and task files (interactive or from plan mode)
 allowed-tools: ["Bash", "Write", "Read", "Glob", "Grep"]
 model: claude-opus-4-5-20251101
-argument-hint: <feature-name> [--from-plan]
+argument-hint: [<request>] [--from-plan]
 ---
 
 # Feature Planning
 
 ## Input
-- `$1` = feature_name (use hyphens: `auth-system`)
+- `$ARGUMENTS` = request description or `--from-plan` flag
 - `--from-plan`: Convert from latest plan mode file
+- Feature name is auto-generated from request or plan content (use hyphens: `auth-system`)
 
 ## Step 0: Session Check
 
@@ -30,22 +31,25 @@ PLAN_FILE=$(ls -t ~/.claude/plans/*.md 2>/dev/null | head -1)
 ```
 If not found: `Plan not found. Complete planning in plan mode first.`
 Else: Read and extract title, overview, steps, files from PLAN_FILE.
+Generate `FEATURE_NAME` from plan title (kebab-case, e.g., `auth-system`).
 
 ### If no --from-plan:
 **CRITICAL: You MUST ask the user for requirements FIRST.**
 
-Check if `$ARGUMENTS` contains only the feature name (no description after it).
-If only feature name exists (no additional text), you MUST:
+Check if `$ARGUMENTS` is empty or too brief (less than 10 characters).
+If so, you MUST:
 1. Ask the user:
 ```
-Planning "$1". Please describe:
+Please describe:
 - What functionality do you need?
 - Main use cases/scenarios?
 - Any technical constraints?
 ```
 2. **STOP and WAIT for user response.**
 3. Do NOT proceed to Step 2 until user provides requirements.
-4. Do NOT infer or guess requirements from the feature name alone.
+
+If `$ARGUMENTS` contains sufficient description, use it as the requirement.
+Generate `FEATURE_NAME` from the request content (kebab-case, 2-4 words).
 
 Only after receiving user's response, proceed to Step 2.
 
@@ -62,21 +66,22 @@ Only after receiving user's response, proceed to Step 2.
 
 ## Step 4: Create Directory and Session
 ```bash
-mkdir -p TODO/$1
+mkdir -p TODO/{FEATURE_NAME}
 mkdir -p .claude
 ```
 
 Create `.claude/.do-session`:
 ```json
-{"feature": "$1", "started_at": "{ISO8601 timestamp}"}
+{"feature": "{FEATURE_NAME}", "started_at": "{ISO8601 timestamp}", "phase": "planning"}
 ```
+Note: `phase` is `planning` initially. It changes to `executing` when `/do-task` runs.
 
 ## Step 5: Create Base Files
-Write the following files to `TODO/$1/`:
+Write the following files to `TODO/{FEATURE_NAME}/`:
 
 ### 5.1 Write PLAN.md
 ```markdown
-# $1 Plan
+# {FEATURE_NAME} Plan
 ## Overview
 {summary}
 ## Goals
@@ -89,12 +94,12 @@ Task: 01.md, Summary
 ## Technical Notes
 {dependencies, risks}
 ## Source
-{If --from-plan: PLAN_FILE path and modified time}
+{If --from-plan: Only filename (e.g., `plan-name.md`) and modified time. NEVER include full path or home directory.}
 ```
 
 ### 5.2 Write requirements.md
 ```markdown
-# $1 Requirements
+# {FEATURE_NAME} Requirements
 ## Original Request
 {user input}
 ## Analyzed
@@ -105,7 +110,7 @@ Task: 01.md, Summary
 
 ### 5.3 Write checklist.md
 ```markdown
-# $1 Checklist
+# {FEATURE_NAME} Checklist
 ## Functional
 - [ ] {from requirements}
 ## Code Quality
@@ -119,7 +124,7 @@ Task: 01.md, Summary
 
 ### 5.4 Write progress.md
 ```markdown
-# $1 Progress
+# {FEATURE_NAME} Progress
 ## Status: 🟡 Planning Done
 ### Timeline
 - [{now}] Planning done
@@ -158,13 +163,13 @@ Rules: Each task independent, clear dependencies stated.
 
 ## Step 7: Verify All Files Created
 ```bash
-ls TODO/$1/
+ls TODO/{FEATURE_NAME}/
 ```
 Expected output must include: PLAN.md, requirements.md, checklist.md, progress.md, 01.md, 02.md, ...
 
 ## Step 8: Done
 ```
-Done. TODO/$1/ created with PLAN.md, requirements.md, checklist.md, progress.md, and task files.
-{If --from-plan: "Converted from {PLAN_FILE}"}
-Next: /do-task $1 | /do-progress $1
+Done. TODO/{FEATURE_NAME}/ created with PLAN.md, requirements.md, checklist.md, progress.md, and task files.
+{If --from-plan: "Converted from {filename only, no path}"}
+Next: /do-task {FEATURE_NAME} | /do-progress {FEATURE_NAME}
 ```

@@ -26,6 +26,11 @@
       "name": "do-deploy",
       "file": "~/.claude/commands/do-deploy.md",
       "description": "Read deployment instructions (DEPLOY.md) and execute deployment"
+    },
+    {
+      "name": "do-cancel",
+      "file": "~/.claude/commands/do-cancel.md",
+      "description": "Cancel current do-* workflow session"
     }
   ],
   "hooks": {

@@ -41,10 +41,10 @@ def complete_checklist(tmp_path):
     todo = tmp_path / "TODO" / "complete-feature"
     todo.mkdir(parents=True)
     (todo / "checklist.md").write_text("- [x] Done 1\n- [x] Done 2\n")
-    # Create session file for hooks to be active
+    # Create session file for hooks to be active (phase: executing)
     session_dir = tmp_path / ".claude"
     session_dir.mkdir(parents=True)
-    (session_dir / ".do-session").write_text("")
+    (session_dir / ".do-session").write_text('{"feature": "complete-feature", "phase": "executing"}')
     return todo
 
 
@@ -54,8 +54,21 @@ def incomplete_checklist(tmp_path):
     todo = tmp_path / "TODO" / "incomplete-feature"
     todo.mkdir(parents=True)
     (todo / "checklist.md").write_text("- [x] Done\n- [ ] Not done\n- [ ] Also not\n")
-    # Create session file for hooks to be active
+    # Create session file for hooks to be active (phase: executing)
     session_dir = tmp_path / ".claude"
     session_dir.mkdir(parents=True)
-    (session_dir / ".do-session").write_text("")
+    (session_dir / ".do-session").write_text('{"feature": "incomplete-feature", "phase": "executing"}')
+    return todo
+
+
+@pytest.fixture
+def planning_phase_checklist(tmp_path):
+    """Create a TODO directory with unchecked items but in planning phase."""
+    todo = tmp_path / "TODO" / "planning-feature"
+    todo.mkdir(parents=True)
+    (todo / "checklist.md").write_text("- [ ] Not done\n- [ ] Also not\n")
+    # Create session file with phase: planning (should skip quality gate)
+    session_dir = tmp_path / ".claude"
+    session_dir.mkdir(parents=True)
+    (session_dir / ".do-session").write_text('{"feature": "planning-feature", "phase": "planning"}')
     return todo
