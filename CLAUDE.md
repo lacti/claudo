@@ -7,6 +7,14 @@ Hooks under development use the `$CLAUDE_PROJECT_DIR/.claude/hooks/` path.
 
 ## Core Rules
 
+### 0. Language Rule
+
+**IMPORTANT: All prompts and command files MUST be written in English.**
+
+- Command files (`.claude/commands/*.md`): English only
+- Hook messages (stdout): English only
+- Documentation: English only
+
 ### 1. Path Rules
 
 **Development Environment (this project)**

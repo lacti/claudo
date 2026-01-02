@@ -31,29 +31,39 @@ If tasks remain:
    - Timeline: `- [{now}] NN.md Done: {summary}`
    - Table: `| NN.md | ✅ | {time} |`
 
-## 4. All Tasks Done → Checklist Review
+## 4. All Tasks Done → Session Complete
 
-### 4.1 Load `@TODO/{feature}/checklist.md`
+### 4.1 Verify Final Review Completed
+The last task is always "Final Review" task.
+It includes checklist verification and code review.
 
-### 4.2 Verify Items
-Code Quality:
-```bash
-npm run lint && npm run test && npm run typecheck
-```
-Functional: Review code against requirements.
+### 4.2 Check Session Status
+After Final Review task is done, check if additional implementation is required:
+- **Additional work needed**: Keep `.do-session`, guide to `/do-plan {feature}`
+- **All complete**: Go to 4.3
 
-### 4.3 Update Checklist
-Mark passed items: `- [x] Lint passed`
-
-### 4.4 Fix Incomplete
-Loop: fix → verify → repeat until all pass.
-
-### 4.5 Done Report
+### 4.3 Done Report
+**Only when all checklist items are `[x]`:**
 1. Delete `.claude/.do-session` file
 2. Report:
 ```
 All done! Tasks: N, Checklist: M items passed.
 Next: /do-commit | /do-deploy
+```
+
+### 4.4 Additional Work Detected (from Final Review)
+If Final Review task identified issues requiring new implementation:
+**DO NOT delete `.do-session`**
+Report:
+```
+Additional implementation required during Final Review.
+
+Issues found:
+- {issue 1}
+- {issue 2}
+
+Session: Active (not completed)
+Next: /do-plan {feature}
 ```
 
 ## 5. Update Status
