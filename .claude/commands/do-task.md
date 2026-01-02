@@ -44,6 +44,8 @@ Mark passed items: `- [x] Lint passed`
 Loop: fix → verify → repeat until all pass.
 
 ### 4.5 Done Report
+1. Delete `.claude/.do-session` file
+2. Report:
 ```
 All done! Tasks: N, Checklist: M items passed.
 Next: /do-commit $1 | /do-deploy

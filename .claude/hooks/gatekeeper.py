@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 import sys
+import os
 
 """
 Hook: UserPromptSubmit
 Role: Gatekeeper
 Description: Analyzes user prompts and recommends using /do-plan for complex tasks.
+Only active when a do-* workflow session exists (.claude/.do-session).
 """
+
+def is_do_session_active():
+    """Check if do-* workflow session is active."""
+    return os.path.exists(".claude/.do-session")
 
 def analyze_complexity(prompt):
     prompt_len = len(prompt)
@@ -24,6 +30,10 @@ def analyze_complexity(prompt):
     return "unknown"
 
 def main():
+    # Only active when do-* session exists
+    if not is_do_session_active():
+        sys.exit(0)
+
     try:
         user_prompt = sys.stdin.read().strip()
     except Exception:

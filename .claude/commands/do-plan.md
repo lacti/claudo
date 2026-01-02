@@ -11,6 +11,17 @@ argument-hint: <feature-name> [--from-plan]
 - `$1` = feature_name (use hyphens: `auth-system`)
 - `--from-plan`: Convert from latest plan mode file
 
+## Step 0: Session Check
+
+1. Check if `.claude/.do-session` exists
+2. If exists:
+   - Read the file and parse JSON
+   - Show: "Existing session found (feature: {feature}, started: {started_at})"
+   - Ask: "Start a new session? The existing session will be cancelled. (yes/no)"
+   - **STOP and WAIT for user response.**
+   - If user says no: exit without changes
+   - If user says yes: proceed to Step 1
+
 ## Step 1: Gather Requirements
 
 ### If --from-plan flag:
@@ -21,14 +32,22 @@ If not found: `Plan not found. Complete planning in plan mode first.`
 Else: Read and extract title, overview, steps, files from PLAN_FILE.
 
 ### If no --from-plan:
-If `$2` empty, ask:
+**CRITICAL: You MUST ask the user for requirements FIRST.**
+
+Check if `$ARGUMENTS` contains only the feature name (no description after it).
+If only feature name exists (no additional text), you MUST:
+1. Ask the user:
 ```
-Planning $1. Provide:
-- Required functionality
-- Main user scenarios
-- Technical constraints
+Planning "$1". Please describe:
+- What functionality do you need?
+- Main use cases/scenarios?
+- Any technical constraints?
 ```
-Else use `$ARGUMENTS` after `$1`.
+2. **STOP and WAIT for user response.**
+3. Do NOT proceed to Step 2 until user provides requirements.
+4. Do NOT infer or guess requirements from the feature name alone.
+
+Only after receiving user's response, proceed to Step 2.
 
 ## Step 2: Context
 1. Check `@CLAUDE.md` for tech stack
@@ -41,9 +60,15 @@ Else use `$ARGUMENTS` after `$1`.
 - Identify risks
 - Split into tasks (01, 02, 03...)
 
-## Step 4: Create Directory
+## Step 4: Create Directory and Session
 ```bash
 mkdir -p TODO/$1
+mkdir -p .claude
+```
+
+Create `.claude/.do-session`:
+```json
+{"feature": "$1", "started_at": "{ISO8601 timestamp}"}
 ```
 
 ## Step 5: Create Base Files

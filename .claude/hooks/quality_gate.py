@@ -8,7 +8,12 @@ import re
 Hook: Stop
 Role: Quality Gate
 Description: Verifies all items in checklist.md are checked before conversation ends.
+Only active when a do-* workflow session exists (.claude/.do-session).
 """
+
+def is_do_session_active():
+    """Check if do-* workflow session is active."""
+    return os.path.exists(".claude/.do-session")
 
 def find_active_checklist():
     todo_dirs = glob.glob("TODO/*/")
@@ -30,6 +35,10 @@ def check_quality_gate(checklist_path):
     return True, 0
 
 def main():
+    # Only active when do-* session exists
+    if not is_do_session_active():
+        sys.exit(0)
+
     checklist_path = find_active_checklist()
     if not checklist_path:
         sys.exit(0)
@@ -37,7 +46,7 @@ def main():
     passed, remaining = check_quality_gate(checklist_path)
 
     if not passed:
-        print("\n[Quality Gate] ⛔ Cannot end session!", file=sys.stderr)
+        print("\n[Quality Gate] Cannot end session!", file=sys.stderr)
         print(f"[Quality Gate] {checklist_path} has {remaining} incomplete item(s).", file=sys.stderr)
         print("Checklist verification failed: There are still incomplete items. Please review checklist.md and complete remaining tasks.")
         sys.exit(1)
