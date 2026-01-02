@@ -86,12 +86,19 @@ Write instructions to be passed to Claude.
 
 ### 5. Testing
 
-1. Run Claude Code in this project directory
-2. Hooks/commands under development are applied
-3. Deploy after confirming normal operation
+**IMPORTANT: All changes MUST pass tests before deployment.**
+
+1. Run `make test` to execute all tests
+2. All tests must pass before any code changes are merged or deployed
+3. Run Claude Code in this project directory for manual testing
+4. Hooks/commands under development are applied
+5. Deploy only after all tests pass
 
 ```bash
-# Deploy after testing
+# Run tests (REQUIRED before deployment)
+make test
+
+# Deploy after all tests pass
 ./scripts/deploy.sh
 ```
 
@@ -108,6 +115,7 @@ Write instructions to be passed to Claude.
 
 ## Pre-Deployment Checklist
 
+- [ ] **All tests pass (`make test`)** ← REQUIRED
 - [ ] Hook scripts have execute permission (`chmod +x`)
 - [ ] Paths use `$CLAUDE_PROJECT_DIR`
 - [ ] stdin/stdout/stderr used correctly

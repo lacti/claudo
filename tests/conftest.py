@@ -41,6 +41,10 @@ def complete_checklist(tmp_path):
     todo = tmp_path / "TODO" / "complete-feature"
     todo.mkdir(parents=True)
     (todo / "checklist.md").write_text("- [x] Done 1\n- [x] Done 2\n")
+    # Create session file for hooks to be active
+    session_dir = tmp_path / ".claude"
+    session_dir.mkdir(parents=True)
+    (session_dir / ".do-session").write_text("")
     return todo
 
 
@@ -50,4 +54,8 @@ def incomplete_checklist(tmp_path):
     todo = tmp_path / "TODO" / "incomplete-feature"
     todo.mkdir(parents=True)
     (todo / "checklist.md").write_text("- [x] Done\n- [ ] Not done\n- [ ] Also not\n")
+    # Create session file for hooks to be active
+    session_dir = tmp_path / ".claude"
+    session_dir.mkdir(parents=True)
+    (session_dir / ".do-session").write_text("")
     return todo

@@ -85,13 +85,19 @@ class TestGatekeeperIntegration:
         )
         assert result.returncode == 0
 
-    def test_complex_prompt_shows_warning(self, hook_path):
+    def test_complex_prompt_shows_warning(self, hook_path, tmp_path):
         """Complex prompts should produce warning on stderr."""
+        # Create session file for hook to be active
+        session_dir = tmp_path / ".claude"
+        session_dir.mkdir(parents=True)
+        (session_dir / ".do-session").write_text("")
+
         result = subprocess.run(
             [sys.executable, str(hook_path)],
             input="implement a new authentication system",
             capture_output=True,
             text=True,
+            cwd=tmp_path,
         )
         assert result.returncode == 0
         assert "[Gatekeeper]" in result.stderr
