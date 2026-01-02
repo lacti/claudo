@@ -49,7 +49,9 @@ argument-hint: [<request>]
 ## Step 1: Gather Requirements
 
 ### If $ARGUMENTS has content (10+ chars):
-Use directly. Generate `FEATURE_NAME` (kebab-case). proceed to Step 2.
+Use directly. Generate `FEATURE_NAME` (kebab-case).
+Check if `TODO/{FEATURE_NAME}` exists. If so, create a different name (e.g. append numerical suffix like `-2`).
+Proceed to Step 2.
 
 ### If $ARGUMENTS empty:
 1. Check recent plans: `ls -t ~/.claude/plans/*.md 2>/dev/null | head -4`
@@ -63,6 +65,7 @@ Use directly. Generate `FEATURE_NAME` (kebab-case). proceed to Step 2.
    Ask: "Describe functionality, use cases, constraints"
    **STOP and WAIT for response.**
    Generate `FEATURE_NAME` (kebab-case).
+   Check if `TODO/{FEATURE_NAME}` exists. If so, create a different name (e.g. append numerical suffix like `-2`).
 
 ## Step 2: Context
 1. `@CLAUDE.md`
