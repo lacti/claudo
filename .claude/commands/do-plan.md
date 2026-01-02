@@ -36,9 +36,10 @@ Else use `$ARGUMENTS` after `$1`.
 mkdir -p TODO/$1
 ```
 
-## Step 5: Generate Files
+## Step 5: Create Base Files
+Write the following files to `TODO/$1/`:
 
-### PLAN.md
+### 5.1 Write PLAN.md
 ```markdown
 # $1 Plan
 ## Overview
@@ -54,7 +55,7 @@ Task: 01.md, Summary
 {dependencies, risks}
 ```
 
-### requirements.md
+### 5.2 Write requirements.md
 ```markdown
 # $1 Requirements
 ## Original Request
@@ -65,7 +66,7 @@ Task: 01.md, Summary
 - [ ] Criterion 1
 ```
 
-### checklist.md
+### 5.3 Write checklist.md
 ```markdown
 # $1 Checklist
 ## Functional
@@ -79,7 +80,7 @@ Task: 01.md, Summary
 - [ ] Edge cases
 ```
 
-### progress.md
+### 5.4 Write progress.md
 ```markdown
 # $1 Progress
 ## Status: 🟡 Planning Done
@@ -93,9 +94,14 @@ Task: 01.md, Summary
 0/{total} (0%)
 ```
 
-### Task files (01.md, 02.md...)
+## Step 6: Create Task Files
+**IMPORTANT: Each task MUST be created as a separate .md file.**
+
+For EACH task identified in Step 3, create a separate file:
+
+### 6.1 Write 01.md
 ```markdown
-# Task NN: {title}
+# Task 01: {title}
 ## Goal
 {specific goal}
 ## Steps
@@ -108,10 +114,19 @@ Task: 01.md, Summary
 {dependencies}
 ```
 
+### 6.2 Write 02.md, 03.md, ... (repeat for each task)
+Use the same template. One file per task.
+
 Rules: Each task independent, clear dependencies stated.
 
-## Step 6: Done
+## Step 7: Verify All Files Created
+```bash
+ls TODO/$1/
 ```
-Done. TODO/$1/ created with PLAN.md, requirements.md, checklist.md, progress.md, task files.
+Expected output must include: PLAN.md, requirements.md, checklist.md, progress.md, 01.md, 02.md, ...
+
+## Step 8: Done
+```
+Done. TODO/$1/ created with PLAN.md, requirements.md, checklist.md, progress.md, and task files (01.md, 02.md, ...).
 Next: /do-task $1 | /do-progress $1
 ```

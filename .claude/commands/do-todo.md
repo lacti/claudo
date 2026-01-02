@@ -27,9 +27,10 @@ Extract: Title, Overview, Steps/Phases, Files to modify
 mkdir -p TODO/$1
 ```
 
-## Step 4: Generate Files
+## Step 4: Create Base Files
+Write the following files to `TODO/$1/`:
 
-### PLAN.md
+### 4.1 Write PLAN.md
 ```markdown
 # $1 Plan
 ## Overview
@@ -45,7 +46,7 @@ Task: 01.md, Summary
 {PLAN_FILE path}, {modified time}
 ```
 
-### checklist.md
+### 4.2 Write checklist.md
 ```markdown
 # $1 Checklist
 ## Implementation
@@ -59,7 +60,7 @@ Task: 01.md, Summary
 - [ ] Edge cases
 ```
 
-### progress.md
+### 4.3 Write progress.md
 ```markdown
 # $1 Progress
 ## Status: 🟡 Planning Done
@@ -73,9 +74,14 @@ Task: 01.md, Summary
 0/{total} (0%)
 ```
 
-### Task files (01.md, 02.md...)
+## Step 5: Create Task Files
+**IMPORTANT: Each task MUST be created as a separate .md file.**
+
+For EACH step/phase identified in Step 2, create a separate file:
+
+### 5.1 Write 01.md
 ```markdown
-# Task NN: {title}
+# Task 01: {title}
 ## Goal
 {from step}
 ## Steps
@@ -88,8 +94,17 @@ Task: 01.md, Summary
 Source: Step N from {PLAN_FILE}
 ```
 
-## Step 5: Done
+### 5.2 Write 02.md, 03.md, ... (repeat for each task)
+Use the same template. One file per task.
+
+## Step 6: Verify All Files Created
+```bash
+ls TODO/$1/
 ```
-Done. TODO/$1/ created from {PLAN_FILE}.
+Expected output must include: PLAN.md, checklist.md, progress.md, 01.md, 02.md, ...
+
+## Step 7: Done
+```
+Done. TODO/$1/ created from {PLAN_FILE} with PLAN.md, checklist.md, progress.md, and task files (01.md, 02.md, ...).
 Next: /do-task $1 | /do-progress $1
 ```
