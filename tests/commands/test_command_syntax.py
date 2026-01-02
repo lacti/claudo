@@ -129,7 +129,6 @@ class TestAllCommandsPresent:
             "do-commit.md",
             "do-progress.md",
             "do-deploy.md",
-            "do-todo.md",
         ]
         for cmd in expected:
             assert (commands_dir / cmd).exists(), f"Missing command: {cmd}"

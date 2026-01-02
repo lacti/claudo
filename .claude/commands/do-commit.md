@@ -27,16 +27,7 @@ git diff
 
 ### 3. Generate Message
 Format: `<type>(<scope>): <subject>` + body + footer
-
-Example:
-```
-feat(auth): Add JWT authentication
-
-- Login/logout endpoints
-- Refresh token logic
-
-Related: TODO/auth-system
-```
+Example: `feat(auth): Add JWT authentication`
 
 ### 4. Confirm
 ```

@@ -60,7 +60,6 @@ teardown() {
     [ "$status" -eq 0 ]
     [ -d "$HOME/.claude/hooks" ]
     [ -f "$HOME/.claude/hooks/gatekeeper.py" ]
-    [ -f "$HOME/.claude/hooks/auto_logger.py" ]
     [ -f "$HOME/.claude/hooks/quality_gate.py" ]
 }
 

@@ -27,7 +27,6 @@
 │   └── execute-task.md     # 작업 실행 커맨드 (Auto-Resume 기능 포함)
 └── hooks/                  # 이벤트 기반 파이썬 스크립트
     ├── gatekeeper.py       # UserPromptSubmit (복잡도 판단)
-    ├── auto_logger.py      # PostToolUse (자동 로깅)
     └── quality_gate.py     # Stop (품질 검증)
 
 ./TODO/                     # (프로젝트 루트) 작업 관리 디렉토리
@@ -61,7 +60,6 @@
   ],
   "hooks": {
     "UserPromptSubmit": "python3 ~/.claude/hooks/gatekeeper.py",
-    "PostToolUse": "python3 ~/.claude/hooks/auto_logger.py",
     "Stop": "python3 ~/.claude/hooks/quality_gate.py"
   }
 }
@@ -270,53 +268,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### **4.2. Auto Logger (자동 기록)**
-
-- File Path: `~/.claude/hooks/auto_logger.py`
-- Description: 파일 수정 이벤트 발생 시 progress.md에 로그를 자동으로 추가합니다.
-
-```python
-#!/usr/bin/env python3
-import sys
-import os
-import glob
-from datetime import datetime
-
-"""
-Hook: PostToolUse
-Role: Auto Logger
-Description: 파일 수정(Write/Edit)이 발생하면 progress.md에 자동으로 로그를 남깁니다.
-"""
-
-def find_latest_todo_dir():
-    todo_dirs = glob.glob("TODO/*/")
-    if not todo_dirs:
-        return None
-    return max(todo_dirs, key=os.path.getmtime)
-
-def main():
-    # stdin 처리 (Blocking 방지)
-    if not sys.stdin.isatty():
-        _ = sys.stdin.read()
-
-    todo_dir = find_latest_todo_dir()
-    if todo_dir:
-        progress_path = os.path.join(todo_dir, "progress.md")
-        if os.path.exists(progress_path):
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            try:
-                with open(progress_path, "a") as f:
-                    f.write(f"n- [{timestamp}] Tool action executed (Auto-logged).")
-            except Exception:
-                pass
-
-    sys.exit(0)
-
-if __name__ == "__main__":
-    main()
-```
-
-### **4.3. Quality Gate (품질 검증)**
+### **4.2. Quality Gate (품질 검증)**
 
 - File Path: `~/.claude/hooks/quality_gate.py`
 - Description: 작업 종료 시도 시 체크리스트 미완료 항목을 감지하여 차단합니다.

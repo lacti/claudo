@@ -22,26 +22,7 @@ DEPLOY.md not found. Create at ./DEPLOY.md or run /do-deploy --init
 ```
 
 ### 3. --init: Generate Template
-```markdown
-# Deployment Guide
-## Environments
-### Production
-URL: https://example.com, Branch: main, Auto: false
-### Staging
-URL: https://staging.example.com, Branch: develop, Auto: true
-## Pre-requisites
-- [ ] Tests passed (npm run test)
-- [ ] Lint passed (npm run lint)
-- [ ] Build OK (npm run build)
-## Deployment Steps
-1. `npm run build`
-2. `npm run test`
-3. `npm run deploy:prod` or `npm run deploy:staging`
-## Rollback
-`npm run rollback`
-## Post-deploy
-- [ ] Health check, [ ] Manual test, [ ] Monitor logs
-```
+Create DEPLOY.md with: Environments (prod/staging), Pre-requisites, Deployment Steps, Rollback, Post-deploy checklist.
 
 ### 4. File Exists → Execute
 

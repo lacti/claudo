@@ -5,7 +5,7 @@
     {
       "name": "do-plan",
       "file": "~/.claude/commands/do-plan.md",
-      "description": "Create implementation plan and task files (interactive)"
+      "description": "Create implementation plan and task files (interactive or from plan mode)"
     },
     {
       "name": "do-task",
@@ -26,11 +26,6 @@
       "name": "do-deploy",
       "file": "~/.claude/commands/do-deploy.md",
       "description": "Read deployment instructions (DEPLOY.md) and execute deployment"
-    },
-    {
-      "name": "do-todo",
-      "file": "~/.claude/commands/do-todo.md",
-      "description": "Convert reviewed plan from plan mode to TODO task files"
     }
   ],
   "hooks": {

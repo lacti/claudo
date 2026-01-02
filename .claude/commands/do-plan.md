@@ -1,16 +1,26 @@
 ---
-description: Create implementation plan and task files (interactive)
+description: Create implementation plan and task files (interactive or from plan mode)
 allowed-tools: ["Bash", "Write", "Read", "Glob", "Grep"]
 model: claude-opus-4-5-20251101
-argument-hint: <feature-name>
+argument-hint: <feature-name> [--from-plan]
 ---
 
-# Feature Planning (Interactive)
+# Feature Planning
 
 ## Input
-`$1` = feature_name (use hyphens: `auth-system`)
+- `$1` = feature_name (use hyphens: `auth-system`)
+- `--from-plan`: Convert from latest plan mode file
 
 ## Step 1: Gather Requirements
+
+### If --from-plan flag:
+```bash
+PLAN_FILE=$(ls -t ~/.claude/plans/*.md 2>/dev/null | head -1)
+```
+If not found: `Plan not found. Complete planning in plan mode first.`
+Else: Read and extract title, overview, steps, files from PLAN_FILE.
+
+### If no --from-plan:
 If `$2` empty, ask:
 ```
 Planning $1. Provide:
@@ -53,6 +63,8 @@ Task: 01.md, Summary
 - `path/file.ts` - reason
 ## Technical Notes
 {dependencies, risks}
+## Source
+{If --from-plan: PLAN_FILE path and modified time}
 ```
 
 ### 5.2 Write requirements.md
@@ -127,6 +139,7 @@ Expected output must include: PLAN.md, requirements.md, checklist.md, progress.m
 
 ## Step 8: Done
 ```
-Done. TODO/$1/ created with PLAN.md, requirements.md, checklist.md, progress.md, and task files (01.md, 02.md, ...).
+Done. TODO/$1/ created with PLAN.md, requirements.md, checklist.md, progress.md, and task files.
+{If --from-plan: "Converted from {PLAN_FILE}"}
 Next: /do-task $1 | /do-progress $1
 ```

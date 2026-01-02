@@ -9,19 +9,17 @@
 | Hook              | Trigger          | Description                             |
 | ----------------- | ---------------- | --------------------------------------- |
 | `gatekeeper.py`   | UserPromptSubmit | Recommends `/do-plan` for complex tasks |
-| `auto_logger.py`  | PostToolUse      | Auto-logging after tool usage           |
 | `quality_gate.py` | Stop             | Quality verification on task completion |
 
 ### Commands
 
-| Command        | Description                                             |
-| -------------- | ------------------------------------------------------- |
-| `/do-plan`     | Create implementation plan and task files (interactive) |
-| `/do-todo`     | Convert reviewed plan from plan mode to TODO files      |
-| `/do-task`     | Identify and execute next task automatically            |
-| `/do-commit`   | Analyze changes and create git commit                   |
-| `/do-progress` | Display progress based on checklist.md                  |
-| `/do-deploy`   | Read DEPLOY.md and run deployment process               |
+| Command        | Description                                                       |
+| -------------- | ----------------------------------------------------------------- |
+| `/do-plan`     | Create implementation plan and task files (interactive or from plan mode) |
+| `/do-task`     | Identify and execute next task automatically                      |
+| `/do-commit`   | Analyze changes and create git commit                             |
+| `/do-progress` | Display progress based on checklist.md                            |
+| `/do-deploy`   | Read DEPLOY.md and run deployment process                         |
 
 ## Quick Start
 
