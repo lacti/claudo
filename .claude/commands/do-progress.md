@@ -1,7 +1,7 @@
 ---
 description: Calculate and visually display progress based on checklist.md
 allowed-tools: ["Bash", "Read", "Glob"]
-model: claude-3-5-sonnet-20241022
+model: claude-sonnet-4-5-20250929
 argument-hint: [feature-name] [--all]
 ---
 

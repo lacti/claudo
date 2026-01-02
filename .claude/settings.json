@@ -39,11 +39,6 @@
         "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gatekeeper.py"}]
       }
     ],
-    "PostToolUse": [
-      {
-        "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/auto_logger.py"}]
-      }
-    ],
     "Stop": [
       {
         "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/quality_gate.py"}]

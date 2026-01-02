@@ -1,7 +1,7 @@
 ---
 description: Analyze changes and create git commit automatically
 allowed-tools: ["Bash", "Read", "Edit"]
-model: claude-3-5-sonnet-20241022
+model: claude-sonnet-4-5-20250929
 argument-hint: [feature-name] [--amend]
 ---
 

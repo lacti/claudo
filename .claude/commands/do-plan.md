@@ -1,7 +1,7 @@
 ---
 description: Create implementation plan and task files (interactive)
 allowed-tools: ["Bash", "Write", "Read", "Glob", "Grep"]
-model: claude-3-5-sonnet-20241022
+model: claude-opus-4-5-20251101
 argument-hint: <feature-name>
 ---
 
