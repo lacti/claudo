@@ -5,217 +5,113 @@ model: claude-3-5-sonnet-20241022
 argument-hint: <feature-name>
 ---
 
-# Feature Planning Protocol (Interactive Mode)
+# Feature Planning (Interactive)
 
-**Goal**: Create a detailed implementation plan through conversation with the user, generating all task files.
+## Input
+`$1` = feature_name (use hyphens: `auth-system`)
 
-## Input Parsing
-
-`$1` = feature_name
-
-- Use **hyphens (-)** instead of spaces
-- Examples: `auth-system`, `user-dashboard`, `payment-gateway`
-
-## Step 1: Requirements Gathering (Interactive)
-
-**If only feature name is provided** (`$2` is empty):
-
-Ask the user the following:
-
+## Step 1: Gather Requirements
+If `$2` empty, ask:
 ```
-📋 Planning the $1 feature.
-
-Please provide detailed requirements:
-- What functionality is needed?
-- What are the main user scenarios?
-- Any specific technical constraints to consider?
+Planning $1. Provide:
+- Required functionality
+- Main user scenarios
+- Technical constraints
 ```
+Else use `$ARGUMENTS` after `$1`.
 
-**If detailed requirements are provided**:
+## Step 2: Context
+1. Check `@CLAUDE.md` for tech stack
+2. `!git status`
+3. Search related code
 
-- Use the remainder of `$ARGUMENTS` after `$1` as requirements
+## Step 3: Analyze
+- Derive file changes
+- Review integration approach
+- Identify risks
+- Split into tasks (01, 02, 03...)
 
-## Step 2: Context Loading
-
-1. Reference project rules: `@CLAUDE.md` (check tech stack)
-2. Check current Git status: `!git status`
-3. Search for related existing code
-
-## Step 3: Analysis & Planning
-
-Analyze user requirements and:
-
-- Derive list of files to be changed
-- Review integration approach with existing code
-- Identify potential risks
-- **Split implementation into subtasks** (01, 02, 03...)
-
-## Step 4: Scaffolding
-
+## Step 4: Create Directory
 ```bash
 mkdir -p TODO/$1
 ```
 
-## Step 5: Artifact Generation
+## Step 5: Generate Files
 
-Generate **all** of the following files:
-
-### A. TODO/$1/PLAN.md
-
+### PLAN.md
 ```markdown
-# $1 Implementation Plan
-
+# $1 Plan
 ## Overview
-
-{Requirements summary}
-
+{summary}
 ## Goals
-
 - [ ] Goal 1
-- [ ] Goal 2
-
-## Implementation Phases
-
-### Phase 1: {Phase name}
-
-- Task file: 01.md
-- Summary
-
-### Phase 2: {Phase name}
-
-- Task file: 02.md
-- Summary
-
-### Phase N: ...
-
+## Phases
+### Phase 1: {name}
+Task: 01.md, Summary
 ## Affected Files
-
-- `path/to/file1.ts` - Reason for change
-
-## Technical Considerations
-
-- Dependencies, compatibility, performance, etc.
+- `path/file.ts` - reason
+## Technical Notes
+{dependencies, risks}
 ```
 
-### B. TODO/$1/requirements.md
-
+### requirements.md
 ```markdown
-# $1 Requirements Specification
-
+# $1 Requirements
 ## Original Request
-
-{Full user requirements}
-
-## Analyzed Requirements
-
+{user input}
+## Analyzed
 1. ...
-2. ...
-
 ## Acceptance Criteria
-
 - [ ] Criterion 1
-- [ ] Criterion 2
 ```
 
-### C. TODO/$1/checklist.md
-
+### checklist.md
 ```markdown
-# $1 Quality Checklist
-
-## Functional Requirements
-
-- [ ] {Requirement derived item 1}
-- [ ] {Requirement derived item 2}
-- [ ] ...
-
+# $1 Checklist
+## Functional
+- [ ] {from requirements}
 ## Code Quality
-
-- [ ] Lint passed (npm run lint)
-- [ ] Tests passed (npm run test)
+- [ ] Lint passed
+- [ ] Tests passed
 - [ ] Type check passed
-
 ## Verification
-
-- [ ] Manual testing completed
-- [ ] Edge cases handled
+- [ ] Manual test
+- [ ] Edge cases
 ```
 
-### D. TODO/$1/progress.md
-
+### progress.md
 ```markdown
 # $1 Progress
-
-## Current Status: 🟡 Planning Completed
-
+## Status: 🟡 Planning Done
 ### Timeline
-
-- [{current date/time}] Planning Completed. Ready to start.
-
-### Task Status
-
-| Task  | Status     | Completed At |
-| ----- | ---------- | ------------ |
-| 01.md | ⏳ Pending | -            |
-| 02.md | ⏳ Pending | -            |
-| ...   | ...        | ...          |
-
-### Completion Rate
-
-- Checklist: 0/{total items} (0%)
+- [{now}] Planning done
+### Tasks
+| Task | Status | Done At |
+|------|--------|---------|
+| 01.md | ⏳ | - |
+### Rate
+0/{total} (0%)
 ```
 
-### E. TODO/$1/01.md, 02.md, ... (Task Files)
-
-**Create a separate task file for each implementation phase:**
-
+### Task files (01.md, 02.md...)
 ```markdown
-# Task 01: {Task title}
-
+# Task NN: {title}
 ## Goal
-
-{Specific goal to achieve in this task}
-
-## Detailed Instructions
-
-1. {Specific implementation step 1}
-2. {Specific implementation step 2}
-3. ...
-
-## Expected File Changes
-
-- `path/to/file.ts` - {Change description}
-
-## Completion Criteria
-
-- [ ] {Completion condition 1}
-- [ ] {Completion condition 2}
-
+{specific goal}
+## Steps
+1. {step}
+## File Changes
+- `path/file.ts` - {what}
+## Done When
+- [ ] {criterion}
 ## Notes
-
-- {Cautions, dependencies, etc.}
+{dependencies}
 ```
 
-**Task file writing rules:**
+Rules: Each task independent, clear dependencies stated.
 
-- Each task should be independently executable
-- Split appropriately to avoid too much in one task
-- Clearly state dependencies on previous tasks
-
-## Step 6: Conclusion
-
+## Step 6: Done
 ```
-✅ Planning completed.
-
-📁 TODO/$1/
-├── PLAN.md         - Implementation plan
-├── requirements.md - Requirements specification
-├── checklist.md    - Quality checklist ({N} items)
-├── progress.md     - Progress tracking
-├── 01.md           - {Task 1 title}
-├── 02.md           - {Task 2 title}
-└── ...
-
-Next commands:
-  /do-task $1       - Start tasks
-  /do-progress $1   - Check progress
+Done. TODO/$1/ created with PLAN.md, requirements.md, checklist.md, progress.md, task files.
+Next: /do-task $1 | /do-progress $1
 ```

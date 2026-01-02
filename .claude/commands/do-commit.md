@@ -5,124 +5,64 @@ model: claude-3-5-sonnet-20241022
 argument-hint: [feature-name] [--amend]
 ---
 
-# Auto Commit Protocol
+# Auto Commit
 
-**Goal**: Analyze current changes, generate meaningful commit message, and auto-commit.
+## Input
+- `$1`: Feature name (optional)
+- `--amend`: Amend last commit (caution)
 
-## Input Parsing
-
-- `$1` (optional): Feature name to associate with
-- `--amend` (optional): Amend last commit (use with caution)
-
-## Execution Steps
+## Steps
 
 ### 1. Collect Changes
-
 ```bash
-# Changed files list
 git status --porcelain
-
-# Staged changes detail
 git diff --cached
-
-# Unstaged changes
 git diff
-
-# New file contents (untracked)
-git status --porcelain | grep "^??" | cut -c4-
 ```
 
-### 2. Analyze Changes
+### 2. Analyze
+- Type: feat, fix, refactor, docs, test, chore, style
+- Scope: affected modules
+- Purpose: why changed
 
-- **Change type classification**: feat, fix, refactor, docs, test, chore, style
-- **Scope**: Which modules/components were changed
-- **Purpose**: Why this change was needed
+### 3. Generate Message
+Format: `<type>(<scope>): <subject>` + body + footer
 
-### 3. Generate Commit Message
-
-Conventional Commits format:
-
+Example:
 ```
-<type>(<scope>): <subject>
+feat(auth): Add JWT authentication
 
-<body>
-
-<footer>
-```
-
-**Example:**
-
-```
-feat(auth): Implement JWT-based authentication system
-
-- Add login/logout API endpoints
-- Implement refresh token logic
-- Apply authentication middleware
+- Login/logout endpoints
+- Refresh token logic
 
 Related: TODO/auth-system
 ```
 
-### 4. User Confirmation
-
+### 4. Confirm
 ```
-📝 Commit Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Type: {type}
-Scope: {scope}
-Subject: {subject}
-
-Changed files:
-  M  src/auth/login.ts
-  A  src/auth/token.ts
-  D  src/old-auth.ts
-
-Message:
-{full commit message}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Proceed with commit? (continuing)
+Type: {type}, Scope: {scope}
+Files: M/A/D list
+Message: {full message}
+Proceed?
 ```
 
-### 5. Execute Commit
-
+### 5. Commit
 ```bash
-git add -A
-git commit -m "{commit message}"
+git add -A && git commit -m "{message}"
+```
+With --amend: `git commit --amend -m "{message}"`
+
+### 6. Record (if $1)
+Add to `TODO/$1/progress.md`: `- [{now}] Commit: {hash} - {subject}`
+
+### 7. Report
+```
+Done! Hash: {hash}, Branch: {branch}
+Stats: N files, +X -Y
+Next: git push | /do-deploy
 ```
 
-**With --amend option:**
-
-```bash
-git commit --amend -m "{amended commit message}"
-```
-
-### 6. If feature_name is specified
-
-Record commit info in `TODO/$1/progress.md`:
-
-```markdown
-- [{current date/time}] Commit: {first 7 chars of hash} - {commit subject}
-```
-
-### 7. Result Report
-
-```
-✅ Commit completed
-
-Commit hash: {hash}
-Branch: {current_branch}
-Message: {subject}
-
-Change statistics:
-  {n} files changed, {insertions} insertions(+), {deletions} deletions(-)
-
-Next steps:
-  git push origin {branch}  # Push to remote
-  /do-deploy                # Run deployment
-```
-
-## Safety Rules
-
-- **Never use --force option**
-- **Warn before using --amend on main/master branch**
-- **Warn and exclude sensitive files (.env, credentials, etc.)**
+## Safety
+- Never --force
+- Warn --amend on main/master
+- Exclude .env, credentials

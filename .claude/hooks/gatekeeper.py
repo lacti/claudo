@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sys
-import os
 
 """
 Hook: UserPromptSubmit
@@ -33,10 +32,10 @@ def main():
     complexity = analyze_complexity(user_prompt)
 
     if complexity == "complex":
-        print(f"\n[Gatekeeper] High task complexity detected.", file=sys.stderr)
-        print(f"[Gatekeeper] For systematic task management, consider using:", file=sys.stderr)
-        print(f"[Gatekeeper] >> /do-plan <feature-name>", file=sys.stderr)
-        print(f"[Gatekeeper] Press Enter to proceed anyway...", file=sys.stderr)
+        print("\n[Gatekeeper] High task complexity detected.", file=sys.stderr)
+        print("[Gatekeeper] For systematic task management, consider using:", file=sys.stderr)
+        print("[Gatekeeper] >> /do-plan <feature-name>", file=sys.stderr)
+        print("[Gatekeeper] Press Enter to proceed anyway...", file=sys.stderr)
         sys.exit(0)
 
     sys.exit(0)

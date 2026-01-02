@@ -5,146 +5,58 @@ model: claude-3-5-sonnet-20241022
 argument-hint: <feature-name>
 ---
 
-# Auto-Resume Task Execution Protocol
+# Auto Task Execution
 
-**Target**: Automatically identify and execute remaining tasks in `TODO/$1` directory.
+## 1. Load Context
+- `@CLAUDE.md` - coding conventions
+- `@TODO/$1/PLAN.md` - plan
+- `@TODO/$1/progress.md` - current state
 
-## 1. Context Loading (State Check)
+## 2. Find Next Task
+1. `ls TODO/$1` to list files
+2. Check progress.md for completed tasks (✅)
+3. Pick next numbered task file (01.md → 02.md → ...)
 
-Load the following context for task execution:
+## 3. Execute Task
+If tasks remain:
+1. Read task file
+2. Implement according to instructions
+3. Run tests/lint per CLAUDE.md
+4. Update progress.md:
+   - Timeline: `- [{now}] NN.md Done: {summary}`
+   - Table: `| NN.md | ✅ | {time} |`
 
-- **Project Rules**: `@CLAUDE.md` (coding conventions)
-- **Feature Plan**: `@TODO/$1/PLAN.md` (overall plan)
-- **Progress Log**: `@TODO/$1/progress.md` (current progress)
+## 4. All Tasks Done → Checklist Review
 
-## 2. Next Task Identification (Reasoning)
+### 4.1 Load `@TODO/$1/checklist.md`
 
-**Determine the next task yourself:**
-
-1. Run `ls TODO/$1` to check files in the directory
-2. Analyze `progress.md` to identify completed tasks (`Completed` or `✅`)
-3. Find the **next task file** in numerical order
-   - Example: If `01.md` is completed, read and execute `02.md`
-
-## 3. Task Execution (Implementation)
-
-**If task files remain:**
-
-1. Read the task file (e.g., `02.md`) using the `Read` tool
-2. Write or modify code according to task instructions
-3. Run tests/lint defined in `CLAUDE.md` after code changes
-4. Record results in `progress.md`:
-   ```markdown
-   - [{current date/time}] 02.md Completed: {brief implementation summary}
-   ```
-5. Update task status table in progress.md:
-   ```markdown
-   | 02.md | ✅ Done | {current time} |
-   ```
-
-## 4. All Tasks Completed Check
-
-**When all task files are completed:**
-
-Perform **checklist review** in the following order:
-
-### 4.1 Load Checklist
-
-```
-@TODO/$1/checklist.md
-```
-
-### 4.2 Verify Each Item
-
-Check and verify each checklist item:
-
-**Code Quality Items:**
-
+### 4.2 Verify Items
+Code Quality:
 ```bash
-# Lint check
-npm run lint
-
-# Run tests
-npm run test
-
-# Type check (if applicable)
-npm run typecheck
+npm run lint && npm run test && npm run typecheck
 ```
-
-**Functional Requirement Items:**
-
-- Review implemented code to verify requirement fulfillment
-- Fix any unmet items
+Functional: Review code against requirements.
 
 ### 4.3 Update Checklist
+Mark passed items: `- [x] Lint passed`
 
-Update verified items with check marks:
+### 4.4 Fix Incomplete
+Loop: fix → verify → repeat until all pass.
 
-```markdown
-- [x] Lint passed (npm run lint)
-- [x] Tests passed (npm run test)
+### 4.5 Done Report
+```
+All done! Tasks: N, Checklist: M items passed.
+Next: /do-commit $1 | /do-deploy
 ```
 
-### 4.4 Handle Incomplete Items
+## 5. Update Status
+In progress: `## Status: 🔵 In Progress (N/M)`
+Complete: `## Status: ✅ Complete`, Rate: 100%
 
-If incomplete items exist:
-
-1. Perform work to resolve the item
-2. Verify again
-3. Repeat until all items are complete
-
-### 4.5 Review Completion Report
-
-When all checklist items are complete:
-
+## 6. Progress Report
 ```
-🎉 All tasks and checklist review completed!
-
-📊 Final Results:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Task files: {N} completed
-✅ Checklist: All {M} items passed
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Next steps:
-  /do-commit $1   - Commit changes
-  /do-deploy      - Run deployment
-```
-
-## 5. Progress Update
-
-Update progress.md status:
-
-**Work in progress:**
-
-```markdown
-## Current Status: 🔵 In Progress (N/M completed)
-```
-
-**All tasks completed + checklist passed:**
-
-```markdown
-## Current Status: ✅ Implementation Complete
-
-### Completion Rate
-
-- Checklist: {M}/{M} (100%)
-```
-
-## 6. Report (When work is in progress)
-
-```
-✅ Task completed: {task_name}
-
-Work performed:
-  - {Change 1}
-  - {Change 2}
-
-Remaining tasks: {remaining_count}
-  - {next_task_name}
-  - ...
-
-Next steps:
-  /do-task $1       - Execute next task
-  /do-progress $1   - Check progress
+Done: {task}
+Changes: {list}
+Remaining: {count} tasks
+Next: /do-task $1 | /do-progress $1
 ```

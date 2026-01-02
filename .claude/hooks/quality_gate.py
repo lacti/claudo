@@ -37,7 +37,7 @@ def main():
     passed, remaining = check_quality_gate(checklist_path)
 
     if not passed:
-        print(f"\n[Quality Gate] ⛔ Cannot end session!", file=sys.stderr)
+        print("\n[Quality Gate] ⛔ Cannot end session!", file=sys.stderr)
         print(f"[Quality Gate] {checklist_path} has {remaining} incomplete item(s).", file=sys.stderr)
         print("Checklist verification failed: There are still incomplete items. Please review checklist.md and complete remaining tasks.")
         sys.exit(1)
