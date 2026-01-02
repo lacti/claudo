@@ -9,49 +9,35 @@ argument-hint: [feature-name] [--amend]
 
 ## Input
 - `$1`: Feature name (optional)
-- `--amend`: Amend last commit (caution)
+- `--amend`: Amend last commit
 
 ## Steps
 
-### 1. Collect Changes
-```bash
-git status --porcelain
-git diff --cached
-git diff
-```
+### 1. Changes & Context
+1. `git status --porcelain`
+2. `git diff --cached` / `git diff`
+3. Identify Type/Scope/Purpose.
 
-### 2. Analyze
-- Type: feat, fix, refactor, docs, test, chore, style
-- Scope: affected modules
-- Purpose: why changed
-
-### 3. Generate Message
+### 2. Message
 Format: `<type>(<scope>): <subject>` + body + footer
 Example: `feat(auth): Add JWT authentication`
 
-### 4. Confirm
-```
-Type: {type}, Scope: {scope}
-Files: M/A/D list
-Message: {full message}
-Proceed?
-```
+### 3. Review & Confirm
+Show: Type, Scope, Files, Message.
+Ask: "Proceed?"
 
-### 5. Commit
+### 4. Commit
 ```bash
 git add -A && git commit -m "{message}"
+# Or with --amend if requested
 ```
-With --amend: `git commit --amend -m "{message}"`
 
-### 6. Resolve Feature Name
-1. If `$1` provided → use `$1`
-2. Else → read `.claude/.do-session` JSON, extract `feature` field
-3. If no session and no `$1` → skip recording
+### 5. Record
+1. Resolve Feature: `$1` or from `.claude/.do-session`.
+2. Update `progress.md`: `- [{now}] Commit: {hash} - {subject}`
+   (Skip if no feature context)
 
-### 7. Record (if feature resolved)
-Add to `TODO/{feature}/progress.md`: `- [{now}] Commit: {hash} - {subject}`
-
-### 8. Report
+### 6. Report
 ```
 Done! Hash: {hash}, Branch: {branch}
 Stats: N files, +X -Y
@@ -59,6 +45,6 @@ Next: git push | /do-deploy
 ```
 
 ## Safety
-- Never --force
-- Warn --amend on main/master
-- Exclude .env, credentials
+- No `--force`.
+- Warn `--amend` on main.
+- Exclude secrets.

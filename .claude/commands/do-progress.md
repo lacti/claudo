@@ -8,57 +8,33 @@ model: claude-sonnet-4-5-20250929
 
 ## Steps
 
-### 1. Resolve Feature Name
+### 1. Read Session & Target
+1. Read `.claude/.do-session` (extract `feature`). Exit if missing.
+2. `ls TODO/{feature}/`
 
-1. Read `.claude/.do-session` JSON, extract `feature` field
-2. If session not found → show "No active session. Start: /do-plan <request>" and exit
+### 2. Analyze
+1. **Checklist**: Count total items vs completed items (`- [x]`).
+2. **Tasks**: Read `progress.md` for last activity.
 
-### 2. Find Target
-
-```bash
-ls TODO/{feature}/   # from $1 or .do-session
-```
-
-### 3. Analyze checklist.md
-
-- Total: Count `- [ ]` + `- [x]`
-- Completed: Count `- [x]`
-- Rate: Completed / Total × 100
-
-### 4. Read progress.md
-
-Extract last activity, last task, timeline.
-
-### 5. Output Format
+### 3. Report
+Display simple progress summary:
 
 ```
-{feature_name} Progress
-Completion: {%} [{bar}] {done}/{total}
+{feature} Progress: {percent}% ({done}/{total})
 
 Checklist:
-  Functional: [x] done [ ] pending ← Next
-  Code Quality: [ ] lint [ ] tests
+  Functional: [x] done [ ] pending
+  Quality:    [ ] passed
 
 Recent: {time} - {action}
 Next: /do-task | /do-commit
 ```
 
-### 6. Status Icons
+## Status Icons (Optional)
+- 100%: ✅ Complete
+- >0%:  🟡 In Progress
+- 0%:   ⚪ Planned
 
-| Rate | Icon | Meaning  |
-| ---- | ---- | -------- |
-| 100% | ✅   | Complete |
-| 70%+ | 🟢   | Almost   |
-| 30%+ | 🟡   | Working  |
-| 1%+  | 🔴   | Early    |
-| 0%   | ⚪   | Planned  |
+## Progress Bar
+Simple text bar: `[████░░░░░░]` (10 blocks)
 
-### 7. Progress Bar (10 blocks)
-
-`░`=empty, `█`=filled. Example: 50% → `█████░░░░░`
-
-## No TODO Found
-
-```
-No active features. Start: /do-plan <name>
-```
