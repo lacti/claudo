@@ -51,6 +51,7 @@ Conventional Commits 형식:
 ```
 
 **예시:**
+
 ```
 feat(auth): JWT 기반 인증 시스템 구현
 
@@ -90,6 +91,7 @@ git commit -m "{커밋 메시지}"
 ```
 
 **--amend 옵션:**
+
 ```bash
 git commit --amend -m "{수정된 커밋 메시지}"
 ```
@@ -97,6 +99,7 @@ git commit --amend -m "{수정된 커밋 메시지}"
 ### 6. feature_name이 지정된 경우
 
 `TODO/$1/progress.md`에 커밋 정보 기록:
+
 ```markdown
 - [{현재 날짜/시간}] Commit: {커밋 해시 앞 7자리} - {커밋 제목}
 ```

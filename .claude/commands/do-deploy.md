@@ -56,11 +56,13 @@ DEPLOY.md 템플릿을 생성하십시오:
 ## 환경 설정
 
 ### Production
+
 - **URL**: https://example.com
 - **브랜치**: main
 - **자동 배포**: false
 
 ### Staging
+
 - **URL**: https://staging.example.com
 - **브랜치**: develop
 - **자동 배포**: true
@@ -68,6 +70,7 @@ DEPLOY.md 템플릿을 생성하십시오:
 ## 사전 조건 (Pre-requisites)
 
 배포 전 다음 항목을 확인하세요:
+
 - [ ] 모든 테스트 통과 (`npm run test`)
 - [ ] 린트 검사 통과 (`npm run lint`)
 - [ ] 빌드 성공 (`npm run build`)
@@ -76,21 +79,27 @@ DEPLOY.md 템플릿을 생성하십시오:
 ## 배포 절차
 
 ### 1. 빌드
+
 \`\`\`bash
 npm run build
 \`\`\`
 
 ### 2. 테스트
+
 \`\`\`bash
 npm run test
 \`\`\`
 
 ### 3. 배포 실행
+
 \`\`\`bash
+
 # Production
+
 npm run deploy:prod
 
 # Staging
+
 npm run deploy:staging
 \`\`\`
 
@@ -98,7 +107,9 @@ npm run deploy:staging
 
 문제 발생 시:
 \`\`\`bash
+
 # 이전 버전으로 롤백
+
 npm run rollback
 \`\`\`
 
@@ -114,6 +125,7 @@ npm run rollback
 DEPLOY.md 파일을 읽고 다음을 수행하십시오:
 
 #### 4.1 환경 확인
+
 ```
 🚀 배포 준비
 
@@ -136,6 +148,7 @@ npm run build
 ```
 
 **하나라도 실패하면 즉시 중단:**
+
 ```
 ❌ 사전 조건 검사 실패
 

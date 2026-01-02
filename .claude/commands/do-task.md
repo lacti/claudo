@@ -12,6 +12,7 @@ argument-hint: <feature-name>
 ## 1. Context Loading (State Check)
 
 작업 수행을 위해 다음 문맥을 로드합니다:
+
 - **Project Rules**: `@CLAUDE.md` (코딩 컨벤션)
 - **Feature Plan**: `@TODO/$1/PLAN.md` (전체 계획)
 - **Progress Log**: `@TODO/$1/progress.md` (현재 진행 상태)
@@ -48,6 +49,7 @@ argument-hint: <feature-name>
 다음 순서로 **체크리스트 리뷰**를 수행하십시오:
 
 ### 4.1 체크리스트 로드
+
 ```
 @TODO/$1/checklist.md
 ```
@@ -57,6 +59,7 @@ argument-hint: <feature-name>
 체크리스트의 각 항목을 확인하고 검증합니다:
 
 **코드 품질 항목:**
+
 ```bash
 # 린트 검사
 npm run lint
@@ -69,12 +72,14 @@ npm run typecheck
 ```
 
 **기능 요구사항 항목:**
+
 - 구현된 코드를 검토하여 요구사항 충족 여부 확인
 - 미충족 항목이 있으면 해당 부분 수정
 
 ### 4.3 체크리스트 업데이트
 
 검증 통과한 항목은 체크 표시로 업데이트:
+
 ```markdown
 - [x] 린트 통과 (npm run lint)
 - [x] 테스트 통과 (npm run test)
@@ -83,6 +88,7 @@ npm run typecheck
 ### 4.4 미완료 항목 처리
 
 미완료 항목이 있는 경우:
+
 1. 해당 항목을 해결하기 위한 작업 수행
 2. 다시 검증
 3. 모든 항목이 완료될 때까지 반복
@@ -110,15 +116,18 @@ npm run typecheck
 progress.md의 상태를 업데이트:
 
 **작업 진행 중:**
+
 ```markdown
 ## 현재 상태: 🔵 작업 진행 중 (N/M 완료)
 ```
 
 **모든 작업 완료 + 체크리스트 통과:**
+
 ```markdown
 ## 현재 상태: ✅ 구현 완료
 
 ### 완료율
+
 - 체크리스트: {M}/{M} (100%)
 ```
 
