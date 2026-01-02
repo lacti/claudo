@@ -1,77 +1,77 @@
-# Claude Code Extensions
+# Claudo
 
-Claude Code의 Hooks와 Commands를 개발하고 관리하기 위한 프로젝트입니다.
+**Claudo** = Claude + do. A project for developing and managing Claude Code Hooks and Commands.
 
-## 구성 요소
+## Components
 
 ### Hooks
 
-| Hook              | 트리거           | 설명                                          |
-| ----------------- | ---------------- | --------------------------------------------- |
-| `gatekeeper.py`   | UserPromptSubmit | 복잡한 작업 감지 시 `/plan-feature` 사용 권장 |
-| `auto_logger.py`  | PostToolUse      | 도구 사용 후 자동 로깅                        |
-| `quality_gate.py` | Stop             | 작업 완료 시 품질 검증                        |
+| Hook              | Trigger          | Description                             |
+| ----------------- | ---------------- | --------------------------------------- |
+| `gatekeeper.py`   | UserPromptSubmit | Recommends `/do-plan` for complex tasks |
+| `auto_logger.py`  | PostToolUse      | Auto-logging after tool usage           |
+| `quality_gate.py` | Stop             | Quality verification on task completion |
 
 ### Commands
 
-| Command        | 설명                                             |
-| -------------- | ------------------------------------------------ |
-| `/do-plan`     | 기능 구현을 위한 계획 수립 및 작업 파일 생성     |
-| `/do-todo`     | Plan mode 검토 완료된 계획을 TODO 파일로 변환    |
-| `/do-task`     | 다음 작업을 자동으로 식별하고 실행               |
-| `/do-commit`   | 변경점을 분석하여 git commit 생성                |
-| `/do-progress` | checklist.md 기반 진행률 표시                    |
-| `/do-deploy`   | DEPLOY.md를 읽고 배포 프로세스 실행              |
+| Command        | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `/do-plan`     | Create implementation plan and task files (interactive) |
+| `/do-todo`     | Convert reviewed plan from plan mode to TODO files      |
+| `/do-task`     | Identify and execute next task automatically            |
+| `/do-commit`   | Analyze changes and create git commit                   |
+| `/do-progress` | Display progress based on checklist.md                  |
+| `/do-deploy`   | Read DEPLOY.md and run deployment process               |
 
-## 빠른 시작
+## Quick Start
 
 ```bash
-# 1. 저장소 클론
-git clone <repository-url>
-cd claude
+# 1. Clone repository
+git clone https://github.com/user/claudo.git
+cd claudo
 
-# 2. 설치 (최초 1회)
+# 2. Install (first time only)
 ./scripts/deploy.sh
 
-# 3. MCP 서버 추가 (선택)
+# 3. Add MCP server (optional)
 claude mcp add chrome-devtools npx chrome-devtools-mcp@latest
 ```
 
-## 문서
+## Documentation
 
-- [INSTALL.md](./INSTALL.md) - 설치 방법
-- [DEPLOYMENT.md](./DEPLOYMENT.md) - 배포 가이드
-- [CLAUDE.md](./CLAUDE.md) - 개발 가이드
+- [INSTALL.md](./INSTALL.md) - Installation guide
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Deployment guide
+- [CLAUDE.md](./CLAUDE.md) - Development guide
 
-## 디렉토리 구조
+## Directory Structure
 
 ```
-claude/
+claudo/
 ├── .claude/
-│   ├── hooks/           # Hook 스크립트
-│   ├── commands/        # Command 정의
-│   └── settings.json    # 개발용 설정
+│   ├── hooks/           # Hook scripts
+│   ├── commands/        # Command definitions
+│   └── settings.json    # Development settings
 ├── scripts/
-│   ├── deploy.sh        # 배포 스크립트
-│   └── rollback.sh      # 롤백 스크립트
+│   ├── deploy.sh        # Deploy script
+│   └── rollback.sh      # Rollback script
 ├── README.md
 ├── INSTALL.md
 ├── DEPLOYMENT.md
 └── CLAUDE.md
 ```
 
-## 워크플로우
+## Workflow
 
 ```
-[개발] .claude/ 내 hooks, commands 수정
+[Development] Modify hooks, commands in .claude/
    ↓
-[테스트] 이 프로젝트에서 Claude Code 실행
+[Testing] Run Claude Code in this project
    ↓
-[배포] ./scripts/deploy.sh
+[Deploy] ./scripts/deploy.sh
    ↓
-[운영] 모든 프로젝트에서 ~/.claude/ 사용
+[Production] All projects use ~/.claude/
 ```
 
-## 라이선스
+## License
 
-Private
+MIT

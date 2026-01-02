@@ -1,5 +1,5 @@
 ---
-description: 변경점을 분석하여 요약하고 자동으로 git commit 생성
+description: Analyze changes and create git commit automatically
 allowed-tools: ["Bash", "Read", "Edit"]
 model: claude-3-5-sonnet-20241022
 argument-hint: [feature-name] [--amend]
@@ -7,40 +7,40 @@ argument-hint: [feature-name] [--amend]
 
 # Auto Commit Protocol
 
-**목표**: 현재 변경사항을 분석하여 의미 있는 커밋 메시지를 생성하고 자동으로 커밋합니다.
+**Goal**: Analyze current changes, generate meaningful commit message, and auto-commit.
 
 ## Input Parsing
 
-- `$1` (선택): 특정 기능과 연결할 경우 지정
-- `--amend` (선택): 마지막 커밋에 추가 (주의해서 사용)
+- `$1` (optional): Feature name to associate with
+- `--amend` (optional): Amend last commit (use with caution)
 
 ## Execution Steps
 
-### 1. 변경사항 수집
+### 1. Collect Changes
 
 ```bash
-# 변경된 파일 목록
+# Changed files list
 git status --porcelain
 
-# 스테이징된 변경사항 상세
+# Staged changes detail
 git diff --cached
 
-# 스테이징되지 않은 변경사항
+# Unstaged changes
 git diff
 
-# 새로 추가된 파일 내용 (untracked)
+# New file contents (untracked)
 git status --porcelain | grep "^??" | cut -c4-
 ```
 
-### 2. 변경사항 분석
+### 2. Analyze Changes
 
-- **변경 유형 분류**: feat, fix, refactor, docs, test, chore, style
-- **영향 범위**: 어떤 모듈/컴포넌트가 변경되었는지
-- **변경 목적**: 왜 이 변경이 필요했는지
+- **Change type classification**: feat, fix, refactor, docs, test, chore, style
+- **Scope**: Which modules/components were changed
+- **Purpose**: Why this change was needed
 
-### 3. 커밋 메시지 생성
+### 3. Generate Commit Message
 
-Conventional Commits 형식:
+Conventional Commits format:
 
 ```
 <type>(<scope>): <subject>
@@ -50,79 +50,79 @@ Conventional Commits 형식:
 <footer>
 ```
 
-**예시:**
+**Example:**
 
 ```
-feat(auth): JWT 기반 인증 시스템 구현
+feat(auth): Implement JWT-based authentication system
 
-- 로그인/로그아웃 API 엔드포인트 추가
-- 리프레시 토큰 로직 구현
-- 인증 미들웨어 적용
+- Add login/logout API endpoints
+- Implement refresh token logic
+- Apply authentication middleware
 
 Related: TODO/auth-system
 ```
 
-### 4. 사용자 확인
+### 4. User Confirmation
 
 ```
-📝 커밋 요약
+📝 Commit Summary
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-타입: {type}
-범위: {scope}
-제목: {subject}
+Type: {type}
+Scope: {scope}
+Subject: {subject}
 
-변경 파일:
+Changed files:
   M  src/auth/login.ts
   A  src/auth/token.ts
   D  src/old-auth.ts
 
-메시지:
-{전체 커밋 메시지}
+Message:
+{full commit message}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-이대로 커밋하시겠습니까? (계속 진행합니다)
+Proceed with commit? (continuing)
 ```
 
-### 5. 커밋 실행
+### 5. Execute Commit
 
 ```bash
 git add -A
-git commit -m "{커밋 메시지}"
+git commit -m "{commit message}"
 ```
 
-**--amend 옵션:**
+**With --amend option:**
 
 ```bash
-git commit --amend -m "{수정된 커밋 메시지}"
+git commit --amend -m "{amended commit message}"
 ```
 
-### 6. feature_name이 지정된 경우
+### 6. If feature_name is specified
 
-`TODO/$1/progress.md`에 커밋 정보 기록:
+Record commit info in `TODO/$1/progress.md`:
 
 ```markdown
-- [{현재 날짜/시간}] Commit: {커밋 해시 앞 7자리} - {커밋 제목}
+- [{current date/time}] Commit: {first 7 chars of hash} - {commit subject}
 ```
 
-### 7. 결과 보고
+### 7. Result Report
 
 ```
-✅ 커밋 완료
+✅ Commit completed
 
-커밋 해시: {hash}
-브랜치: {current_branch}
-메시지: {subject}
+Commit hash: {hash}
+Branch: {current_branch}
+Message: {subject}
 
-변경 통계:
+Change statistics:
   {n} files changed, {insertions} insertions(+), {deletions} deletions(-)
 
-다음 단계:
-  git push origin {branch}  # 원격에 푸시
-  /do-deploy                # 배포 실행
+Next steps:
+  git push origin {branch}  # Push to remote
+  /do-deploy                # Run deployment
 ```
 
 ## Safety Rules
 
-- **절대 --force 옵션 사용 금지**
-- **main/master 브랜치에서는 --amend 사용 전 경고**
-- **민감한 파일 (.env, credentials 등) 포함 시 경고 후 제외**
+- **Never use --force option**
+- **Warn before using --amend on main/master branch**
+- **Warn and exclude sensitive files (.env, credentials, etc.)**

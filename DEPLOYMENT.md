@@ -1,26 +1,26 @@
-# 배포 가이드
+# Deployment Guide
 
-## 배포 프로세스
+## Deployment Process
 
-### 1. 배포 실행
+### 1. Run Deployment
 
 ```bash
 ./scripts/deploy.sh
 ```
 
-**수행 작업:**
+**Actions performed:**
 
-1. `.claude/hooks/` → `~/.claude/hooks/` 복사
-2. `.claude/commands/` → `~/.claude/commands/` 복사
-3. `settings.json` 병합 (기존 설정 유지 + commands/hooks 추가)
-4. 경로 자동 변환 (`$CLAUDE_PROJECT_DIR` → `~/.claude`)
-5. Git 커밋 생성
+1. Copy `.claude/hooks/` → `~/.claude/hooks/`
+2. Copy `.claude/commands/` → `~/.claude/commands/`
+3. Merge `settings.json` (preserve existing + add commands/hooks)
+4. Auto-convert paths (`$CLAUDE_PROJECT_DIR` → `~/.claude`)
+5. Create Git commit
 
-**출력 예시:**
+**Example output:**
 
 ```
-=== Claude Hooks 배포 ===
-Source: /home/user/git/claude/.claude/
+=== Claudo Deployment ===
+Source: /home/user/git/claudo/.claude/
 Target: /home/user/.claude/
 
 Source commit: abc1234 (main)
@@ -28,101 +28,101 @@ Source message: Add new hook
 
 Copying files...
 Merging settings.json...
-  - commands, hooks 병합 완료 (경로 변환: $CLAUDE_PROJECT_DIR → ~/.claude)
+  - Merged commands, hooks (path conversion: $CLAUDE_PROJECT_DIR → ~/.claude)
 
 Committing changes...
 [main def5678] Deploy from main@abc1234: Add new hook
 
-=== 배포 완료 ===
+=== Deployment Complete ===
 Deployed commit: def5678
 ```
 
-### 2. 배포 확인
+### 2. Verify Deployment
 
 ```bash
-# 배포된 파일 확인
+# Check deployed files
 ls -la ~/.claude/hooks/
 ls -la ~/.claude/commands/
 
-# settings.json 확인
+# Check settings.json
 cat ~/.claude/settings.json
 
-# 배포 히스토리 확인
+# View deployment history
 ./scripts/rollback.sh
 ```
 
-## 롤백
+## Rollback
 
-### 배포 히스토리 조회
+### View Deployment History
 
 ```bash
 ./scripts/rollback.sh
 ```
 
-**출력 예시:**
+**Example output:**
 
 ```
-=== 배포 히스토리 ===
+=== Deployment History ===
 
 def5678 2026-01-02 12:05 Deploy from main@abc1234: Add new hook
 abc1234 2026-01-02 11:55 Deploy from main@xyz9999: Initial
 feea5a9 2026-01-02 11:53 Initial commit
 
 Usage:
-  rollback.sh <commit>  # 특정 버전으로 롤백
-  rollback.sh HEAD~1    # 직전 버전으로 롤백
+  rollback.sh <commit>  # Rollback to specific version
+  rollback.sh HEAD~1    # Rollback to previous version
 
-현재 버전: def5678
+Current version: def5678
 ```
 
-### 롤백 실행
+### Execute Rollback
 
 ```bash
-# 특정 커밋으로 롤백
+# Rollback to specific commit
 ./scripts/rollback.sh abc1234
 
-# 직전 버전으로 롤백
+# Rollback to previous version
 ./scripts/rollback.sh HEAD~1
 ```
 
-**롤백 시 확인 프롬프트:**
+**Rollback confirmation prompt:**
 
 ```
-=== 롤백 실행 ===
+=== Rollback Execution ===
 Current: def5678
 Target:  abc1234
 
 Target commit info:
   abc1234 2026-01-02 11:55 Deploy from main@xyz9999: Initial
 
-롤백을 진행하시겠습니까? (y/N)
+Proceed with rollback? (y/N)
 ```
 
-## 배포 구조
+## Deployment Structure
 
-### 경로 변환
+### Path Conversion
 
-| 개발 환경                               | 운영 환경             |
-| --------------------------------------- | --------------------- |
-| `$CLAUDE_PROJECT_DIR/.claude/hooks/`    | `~/.claude/hooks/`    |
-| `$CLAUDE_PROJECT_DIR/.claude/commands/` | `~/.claude/commands/` |
+| Development Environment                 | Production Environment |
+| --------------------------------------- | ---------------------- |
+| `$CLAUDE_PROJECT_DIR/.claude/hooks/`    | `~/.claude/hooks/`     |
+| `$CLAUDE_PROJECT_DIR/.claude/commands/` | `~/.claude/commands/`  |
 
-### settings.json 병합
+### settings.json Merge
 
-**병합 대상 키:**
+**Merged keys:**
 
-- `commands` - 전체 교체
-- `hooks` - 전체 교체 (경로 변환 포함)
+- `commands` - Full replacement
+- `hooks` - Full replacement (with path conversion)
 
-**유지되는 키:**
+**Preserved keys:**
 
 - `model`
 - `mcpServers`
-- 기타 사용자 설정
+- Other user settings
 
-## 문제 해결
+## Troubleshooting
 
-### ~/.claude가 git 저장소가 아님
+### ~/.claude is not a git repository
 
 ```bash
 cd ~/.claude
@@ -131,7 +131,7 @@ git add .gitignore settings.json
 git commit -m "Initial commit"
 ```
 
-### jq가 설치되어 있지 않음
+### jq not installed
 
 ```bash
 # Ubuntu/Debian
@@ -141,21 +141,21 @@ sudo apt install jq
 brew install jq
 ```
 
-### 배포 후 hook이 동작하지 않음
+### Hooks not working after deployment
 
-1. 실행 권한 확인:
+1. Check permissions:
 
    ```bash
    chmod +x ~/.claude/hooks/*.py
    ```
 
-2. 경로 확인:
+2. Check paths:
 
    ```bash
    cat ~/.claude/settings.json | jq '.hooks'
    ```
 
-3. Python 경로 확인:
+3. Check Python path:
    ```bash
    which python3
    ```

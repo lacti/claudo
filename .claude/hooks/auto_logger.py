@@ -7,7 +7,7 @@ from datetime import datetime
 """
 Hook: PostToolUse
 Role: Auto Logger
-Description: 파일 수정(Write/Edit)이 발생하면 progress.md에 자동으로 로그를 남깁니다.
+Description: Automatically logs to progress.md when file modifications (Write/Edit) occur.
 """
 
 def find_latest_todo_dir():
@@ -17,7 +17,7 @@ def find_latest_todo_dir():
     return max(todo_dirs, key=os.path.getmtime)
 
 def main():
-    # stdin 처리 (Blocking 방지)
+    # Handle stdin (prevent blocking)
     if not sys.stdin.isatty():
         _ = sys.stdin.read()
 

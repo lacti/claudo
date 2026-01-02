@@ -7,7 +7,7 @@ import re
 """
 Hook: Stop
 Role: Quality Gate
-Description: 대화 종료 시 checklist.md의 모든 항목이 체크되었는지 검증합니다.
+Description: Verifies all items in checklist.md are checked before conversation ends.
 """
 
 def find_active_checklist():
@@ -37,9 +37,9 @@ def main():
     passed, remaining = check_quality_gate(checklist_path)
 
     if not passed:
-        print(f"\n[Quality Gate] ⛔ 작업 종료 불가!", file=sys.stderr)
-        print(f"[Quality Gate] {checklist_path} 에 완료되지 않은 항목이 {remaining}개 있습니다.", file=sys.stderr)
-        print("체크리스트 검증 실패: 아직 완료되지 않은 항목이 있습니다. checklist.md를 확인하고 작업을 마무리해주세요.")
+        print(f"\n[Quality Gate] ⛔ Cannot end session!", file=sys.stderr)
+        print(f"[Quality Gate] {checklist_path} has {remaining} incomplete item(s).", file=sys.stderr)
+        print("Checklist verification failed: There are still incomplete items. Please review checklist.md and complete remaining tasks.")
         sys.exit(1)
 
     sys.exit(0)

@@ -1,13 +1,13 @@
-# 설치 가이드
+# Installation Guide
 
-## 사전 요구사항
+## Prerequisites
 
-- Claude Code CLI 설치됨
+- Claude Code CLI installed
 - Python 3.x
-- jq (JSON 처리용)
+- jq (for JSON processing)
 - Git
 
-### jq 설치
+### Install jq
 
 ```bash
 # Ubuntu/Debian
@@ -16,34 +16,34 @@ sudo apt install jq
 # macOS
 brew install jq
 
-# 확인
+# Verify
 jq --version
 ```
 
-## 설치 단계
+## Installation Steps
 
-### 1. 저장소 클론
+### 1. Clone Repository
 
 ```bash
-git clone <repository-url> ~/git/claude
-cd ~/git/claude
+git clone https://github.com/user/claudo.git ~/git/claudo
+cd ~/git/claudo
 ```
 
-### 2. ~/.claude Git 저장소 초기화
+### 2. Initialize ~/.claude Git Repository
 
 ```bash
-# ~/.claude 디렉토리로 이동
+# Navigate to ~/.claude directory
 cd ~/.claude
 
-# Git 저장소 초기화
+# Initialize Git repository
 git init
 
-# .gitignore 생성
+# Create .gitignore
 cat > .gitignore << 'EOF'
-# 모든 것 제외
+# Exclude everything
 *
 
-# 관리 대상 포함
+# Include managed files
 !.gitignore
 !settings.json
 !hooks/
@@ -51,45 +51,45 @@ cat > .gitignore << 'EOF'
 !commands/
 !commands/**
 
-# 민감 정보 제외
+# Exclude sensitive files
 .credentials.json
 EOF
 
-# 초기 커밋
+# Initial commit
 git add .gitignore settings.json
 git commit -m "Initial commit: settings.json and .gitignore"
 ```
 
-### 3. 배포 실행
+### 3. Run Deployment
 
 ```bash
-cd ~/git/claude
+cd ~/git/claudo
 ./scripts/deploy.sh
 ```
 
-### 4. 설치 확인
+### 4. Verify Installation
 
 ```bash
-# 배포된 파일 확인
+# Check deployed files
 ls ~/.claude/hooks/
 ls ~/.claude/commands/
 
-# Claude Code에서 명령어 확인
+# Verify in Claude Code
 claude
-# 프롬프트에서 /do- 입력 시 자동완성 확인
+# Type /do- in prompt to see autocomplete
 ```
 
-## 선택적 설정
+## Optional Configuration
 
-### Chrome DevTools MCP 서버 추가
+### Add Chrome DevTools MCP Server
 
 ```bash
 claude mcp add chrome-devtools npx chrome-devtools-mcp@latest
 ```
 
-### 모델 설정
+### Model Configuration
 
-`~/.claude/settings.json`에서 직접 수정:
+Edit `~/.claude/settings.json` directly:
 
 ```json
 {
@@ -97,32 +97,32 @@ claude mcp add chrome-devtools npx chrome-devtools-mcp@latest
 }
 ```
 
-## 업데이트
+## Update
 
-저장소에서 최신 변경사항을 가져온 후 재배포:
+Pull latest changes and redeploy:
 
 ```bash
-cd ~/git/claude
+cd ~/git/claudo
 git pull
 ./scripts/deploy.sh
 ```
 
-## 제거
+## Uninstall
 
-### Hooks/Commands만 제거
+### Remove Hooks/Commands Only
 
 ```bash
 rm -rf ~/.claude/hooks
 rm -rf ~/.claude/commands
 ```
 
-### settings.json에서 설정 제거
+### Remove from settings.json
 
-`~/.claude/settings.json`에서 `commands`와 `hooks` 키 삭제
+Delete `commands` and `hooks` keys from `~/.claude/settings.json`
 
-## 문제 해결
+## Troubleshooting
 
-### "~/.claude is not a git repository" 오류
+### "~/.claude is not a git repository" Error
 
 ```bash
 cd ~/.claude
@@ -131,23 +131,23 @@ git add .gitignore settings.json
 git commit -m "Initial commit"
 ```
 
-### Hook 실행 권한 오류
+### Hook Permission Error
 
 ```bash
 chmod +x ~/.claude/hooks/*.py
 ```
 
-### Claude Code에서 명령어가 보이지 않음
+### Commands Not Visible in Claude Code
 
-1. Claude Code 재시작
-2. settings.json 확인:
+1. Restart Claude Code
+2. Check settings.json:
    ```bash
    cat ~/.claude/settings.json | jq '.commands'
    ```
 
-### Python을 찾을 수 없음
+### Python Not Found
 
-시스템에 Python 3 설치 확인:
+Verify Python 3 installation:
 
 ```bash
 which python3

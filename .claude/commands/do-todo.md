@@ -1,5 +1,5 @@
 ---
-description: Plan mode 검토 완료된 계획을 TODO 작업 파일로 변환
+description: Convert reviewed plan from plan mode to TODO task files
 allowed-tools: ["Bash", "Write", "Read", "Glob"]
 model: claude-3-5-sonnet-20241022
 argument-hint: <task-name>
@@ -7,42 +7,42 @@ argument-hint: <task-name>
 
 # Plan to TODO Conversion Protocol
 
-**목표**: Claude Code plan mode에서 검토 완료된 계획을 `TODO/<task>/` 구조로 변환합니다.
+**Goal**: Convert reviewed plan from Claude Code plan mode to `TODO/<task>/` structure.
 
 ## Input Parsing
 
-`$1` = 작업명 (task_name)
+`$1` = task_name
 
-- 띄어쓰기 대신 **하이픈(-)**을 사용하세요
-- 예: `auth-system`, `deploy-pipeline`, `hook-refactor`
+- Use **hyphens (-)** instead of spaces
+- Examples: `auth-system`, `deploy-pipeline`, `hook-refactor`
 
-## Step 1: Plan 파일 탐지
+## Step 1: Detect Plan File
 
-`~/.claude/plans/` 디렉토리에서 **가장 최근 수정된** `.md` 파일을 찾습니다:
+Find the **most recently modified** `.md` file in `~/.claude/plans/` directory:
 
 ```bash
 PLAN_FILE=$(ls -t ~/.claude/plans/*.md 2>/dev/null | head -1)
 ```
 
-**파일을 찾을 수 없는 경우**:
+**If file not found**:
 
 ```
-❌ Plan 파일을 찾을 수 없습니다.
+❌ Plan file not found.
 
-먼저 plan mode에서 계획을 수립하세요:
-1. Claude Code에서 plan mode 진입
-2. 계획 수립 및 검토 완료
-3. /do-todo <task-name> 실행
+Please complete planning in plan mode first:
+1. Enter plan mode in Claude Code
+2. Complete plan creation and review
+3. Run /do-todo <task-name>
 ```
 
-## Step 2: Plan 파일 읽기 및 분석
+## Step 2: Read and Analyze Plan File
 
-Plan 파일을 읽고 다음 요소를 추출합니다:
+Read the plan file and extract the following elements:
 
-- **제목**: 첫 번째 `#` 헤딩
-- **개요**: 제목 다음 단락
-- **단계들**: `### Step N:` 또는 `### Phase N:` 패턴
-- **수정 대상 파일**: 파일 경로 패턴 (`path/to/file`)
+- **Title**: First `#` heading
+- **Overview**: Paragraph after title
+- **Steps**: `### Step N:` or `### Phase N:` patterns
+- **Files to modify**: File path patterns (`path/to/file`)
 
 ## Step 3: Scaffolding
 
@@ -52,140 +52,140 @@ mkdir -p TODO/$1
 
 ## Step 4: Artifact Generation
 
-다음 파일들을 **모두 반드시** 생성하십시오:
+Generate **all** of the following files:
 
 ### A. TODO/$1/PLAN.md
 
-Plan 파일의 내용을 기반으로 구조화:
+Structure based on plan file content:
 
 ```markdown
-# $1 구현 계획
+# $1 Implementation Plan
 
-## 개요
+## Overview
 
-{plan 파일의 개요 섹션}
+{Overview section from plan file}
 
-## 목표
+## Goals
 
-- [ ] {plan에서 도출한 목표 1}
-- [ ] {plan에서 도출한 목표 2}
+- [ ] {Goal derived from plan 1}
+- [ ] {Goal derived from plan 2}
 
-## 구현 단계
+## Implementation Phases
 
-### Phase 1: {단계명}
+### Phase 1: {Phase name}
 
-- 작업 파일: 01.md
-- 내용 요약
+- Task file: 01.md
+- Summary
 
-### Phase 2: {단계명}
+### Phase 2: {Phase name}
 
-- 작업 파일: 02.md
-- 내용 요약
+- Task file: 02.md
+- Summary
 
-## 영향받는 파일
+## Affected Files
 
-- `path/to/file` - 변경 사유
+- `path/to/file` - Reason for change
 
-## 원본 Plan 파일
+## Original Plan File
 
-- 경로: {PLAN_FILE 경로}
-- 수정일: {파일 수정 시간}
+- Path: {PLAN_FILE path}
+- Modified: {file modification time}
 ```
 
 ### B. TODO/$1/checklist.md
 
-Plan의 각 단계에서 체크리스트 항목을 도출:
+Derive checklist items from each step in the plan:
 
 ```markdown
-# $1 품질 체크리스트
+# $1 Quality Checklist
 
-## 구현 요구사항
+## Implementation Requirements
 
-- [ ] {Step 1의 핵심 완료 조건}
-- [ ] {Step 2의 핵심 완료 조건}
+- [ ] {Step 1 completion criteria}
+- [ ] {Step 2 completion criteria}
 - [ ] ...
 
-## 코드 품질
+## Code Quality
 
-- [ ] 린트 통과
-- [ ] 테스트 통과
-- [ ] 타입 검사 통과
+- [ ] Lint passed
+- [ ] Tests passed
+- [ ] Type check passed
 
-## 검증
+## Verification
 
-- [ ] 수동 테스트 완료
-- [ ] 엣지 케이스 처리 확인
+- [ ] Manual testing completed
+- [ ] Edge cases handled
 ```
 
 ### C. TODO/$1/progress.md
 
 ```markdown
-# $1 진행 상황
+# $1 Progress
 
-## 현재 상태: 🟡 계획 수립 완료
+## Current Status: 🟡 Planning Completed
 
-### 타임라인
+### Timeline
 
-- [{현재 날짜/시간}] Plan converted from: {PLAN_FILE 이름}
+- [{current date/time}] Plan converted from: {PLAN_FILE name}
 
-### 작업 현황
+### Task Status
 
-| 작업  | 상태    | 완료 시간 |
-| ----- | ------- | --------- |
-| 01.md | ⏳ 대기 | -         |
-| 02.md | ⏳ 대기 | -         |
-| ...   | ...     | ...       |
+| Task  | Status     | Completed At |
+| ----- | ---------- | ------------ |
+| 01.md | ⏳ Pending | -            |
+| 02.md | ⏳ Pending | -            |
+| ...   | ...        | ...          |
 
-### 완료율
+### Completion Rate
 
-- 체크리스트: 0/{총 항목 수} (0%)
+- Checklist: 0/{total items} (0%)
 ```
 
-### D. TODO/$1/01.md, 02.md, ... (세부 작업 파일)
+### D. TODO/$1/01.md, 02.md, ... (Task Files)
 
-Plan의 각 Step/Phase를 별도의 작업 파일로 변환:
+Convert each Step/Phase from the plan to separate task files:
 
 ```markdown
-# 작업 01: {Step 제목}
+# Task 01: {Step title}
 
-## 목표
+## Goal
 
-{Step의 설명에서 추출}
+{Extracted from Step description}
 
-## 상세 지시사항
+## Detailed Instructions
 
-1. {Step 내용에서 추출한 구체적 작업}
+1. {Specific task extracted from Step content}
 2. ...
 
-## 예상 변경 파일
+## Expected File Changes
 
-- `path/to/file` - {변경 내용}
+- `path/to/file` - {Change description}
 
-## 완료 기준
+## Completion Criteria
 
-- [ ] {이 작업의 완료 조건}
+- [ ] {Completion condition for this task}
 
-## 참고사항
+## Notes
 
-- 원본: {PLAN_FILE}의 Step N
+- Source: Step N from {PLAN_FILE}
 ```
 
 ## Step 5: Conclusion
 
 ```
-✅ Plan이 TODO 구조로 변환되었습니다.
+✅ Plan converted to TODO structure.
 
 📁 TODO/$1/
-├── PLAN.md         - 구현 계획
-├── checklist.md    - 품질 체크리스트 ({N}개 항목)
-├── progress.md     - 진행 상황
-├── 01.md           - {작업 1 제목}
-├── 02.md           - {작업 2 제목}
+├── PLAN.md         - Implementation plan
+├── checklist.md    - Quality checklist ({N} items)
+├── progress.md     - Progress tracking
+├── 01.md           - {Task 1 title}
+├── 02.md           - {Task 2 title}
 └── ...
 
-원본 Plan: {PLAN_FILE}
+Original Plan: {PLAN_FILE}
 
-다음 명령어:
-  /do-task $1       - 작업 시작
-  /do-progress $1   - 진행 상황 확인
+Next commands:
+  /do-task $1       - Start tasks
+  /do-progress $1   - Check progress
 ```

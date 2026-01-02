@@ -1,5 +1,5 @@
 ---
-description: 기능의 다음 작업을 자동으로 식별하고 실행, 완료 시 체크리스트 리뷰
+description: Identify and execute next task automatically, review checklist on completion
 allowed-tools: ["Bash", "Write", "Read", "Edit", "Ls"]
 model: claude-3-5-sonnet-20241022
 argument-hint: <feature-name>
@@ -7,144 +7,144 @@ argument-hint: <feature-name>
 
 # Auto-Resume Task Execution Protocol
 
-**Target**: `TODO/$1` 디렉토리의 잔여 작업을 자동으로 식별하고 실행합니다.
+**Target**: Automatically identify and execute remaining tasks in `TODO/$1` directory.
 
 ## 1. Context Loading (State Check)
 
-작업 수행을 위해 다음 문맥을 로드합니다:
+Load the following context for task execution:
 
-- **Project Rules**: `@CLAUDE.md` (코딩 컨벤션)
-- **Feature Plan**: `@TODO/$1/PLAN.md` (전체 계획)
-- **Progress Log**: `@TODO/$1/progress.md` (현재 진행 상태)
+- **Project Rules**: `@CLAUDE.md` (coding conventions)
+- **Feature Plan**: `@TODO/$1/PLAN.md` (overall plan)
+- **Progress Log**: `@TODO/$1/progress.md` (current progress)
 
 ## 2. Next Task Identification (Reasoning)
 
-**스스로 판단하여 다음 작업을 결정하십시오:**
+**Determine the next task yourself:**
 
-1. `ls TODO/$1` 명령을 실행하여 해당 폴더 내의 파일 목록을 확인
-2. `progress.md`의 기록을 분석하여 이미 완료된 작업(`Completed` 또는 `✅`)을 파악
-3. 숫자 순서상 **그 다음으로 진행해야 할 작업 파일**을 찾음
-   - 예시: `01.md`가 완료되었다면 `02.md`를 읽고 실행
+1. Run `ls TODO/$1` to check files in the directory
+2. Analyze `progress.md` to identify completed tasks (`Completed` or `✅`)
+3. Find the **next task file** in numerical order
+   - Example: If `01.md` is completed, read and execute `02.md`
 
 ## 3. Task Execution (Implementation)
 
-**작업 파일이 남아있는 경우:**
+**If task files remain:**
 
-1. 해당 작업 파일(예: `02.md`)을 `Read` 도구로 읽음
-2. 작업 파일의 지시사항에 따라 코드를 작성하거나 수정
-3. 코드 수정 후 `CLAUDE.md`에 정의된 테스트/린트 실행하여 검증
-4. `progress.md`에 결과 기록:
+1. Read the task file (e.g., `02.md`) using the `Read` tool
+2. Write or modify code according to task instructions
+3. Run tests/lint defined in `CLAUDE.md` after code changes
+4. Record results in `progress.md`:
    ```markdown
-   - [{현재 날짜/시간}] 02.md Completed: {간략한 구현 내용}
+   - [{current date/time}] 02.md Completed: {brief implementation summary}
    ```
-5. progress.md의 작업 현황 테이블 업데이트:
+5. Update task status table in progress.md:
    ```markdown
-   | 02.md | ✅ 완료 | {현재 시간} |
+   | 02.md | ✅ Done | {current time} |
    ```
 
 ## 4. All Tasks Completed Check
 
-**모든 작업 파일이 완료된 경우:**
+**When all task files are completed:**
 
-다음 순서로 **체크리스트 리뷰**를 수행하십시오:
+Perform **checklist review** in the following order:
 
-### 4.1 체크리스트 로드
+### 4.1 Load Checklist
 
 ```
 @TODO/$1/checklist.md
 ```
 
-### 4.2 각 항목 검증
+### 4.2 Verify Each Item
 
-체크리스트의 각 항목을 확인하고 검증합니다:
+Check and verify each checklist item:
 
-**코드 품질 항목:**
+**Code Quality Items:**
 
 ```bash
-# 린트 검사
+# Lint check
 npm run lint
 
-# 테스트 실행
+# Run tests
 npm run test
 
-# 타입 검사 (있는 경우)
+# Type check (if applicable)
 npm run typecheck
 ```
 
-**기능 요구사항 항목:**
+**Functional Requirement Items:**
 
-- 구현된 코드를 검토하여 요구사항 충족 여부 확인
-- 미충족 항목이 있으면 해당 부분 수정
+- Review implemented code to verify requirement fulfillment
+- Fix any unmet items
 
-### 4.3 체크리스트 업데이트
+### 4.3 Update Checklist
 
-검증 통과한 항목은 체크 표시로 업데이트:
+Update verified items with check marks:
 
 ```markdown
-- [x] 린트 통과 (npm run lint)
-- [x] 테스트 통과 (npm run test)
+- [x] Lint passed (npm run lint)
+- [x] Tests passed (npm run test)
 ```
 
-### 4.4 미완료 항목 처리
+### 4.4 Handle Incomplete Items
 
-미완료 항목이 있는 경우:
+If incomplete items exist:
 
-1. 해당 항목을 해결하기 위한 작업 수행
-2. 다시 검증
-3. 모든 항목이 완료될 때까지 반복
+1. Perform work to resolve the item
+2. Verify again
+3. Repeat until all items are complete
 
-### 4.5 리뷰 완료 보고
+### 4.5 Review Completion Report
 
-모든 체크리스트 항목이 완료되면:
+When all checklist items are complete:
 
 ```
-🎉 모든 작업 및 체크리스트 리뷰가 완료되었습니다!
+🎉 All tasks and checklist review completed!
 
-📊 최종 결과:
+📊 Final Results:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ 작업 파일: {N}개 완료
-✅ 체크리스트: {M}개 항목 모두 통과
+✅ Task files: {N} completed
+✅ Checklist: All {M} items passed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-다음 단계:
-  /do-commit $1   - 변경사항 커밋
-  /do-deploy      - 배포 실행
+Next steps:
+  /do-commit $1   - Commit changes
+  /do-deploy      - Run deployment
 ```
 
 ## 5. Progress Update
 
-progress.md의 상태를 업데이트:
+Update progress.md status:
 
-**작업 진행 중:**
-
-```markdown
-## 현재 상태: 🔵 작업 진행 중 (N/M 완료)
-```
-
-**모든 작업 완료 + 체크리스트 통과:**
+**Work in progress:**
 
 ```markdown
-## 현재 상태: ✅ 구현 완료
-
-### 완료율
-
-- 체크리스트: {M}/{M} (100%)
+## Current Status: 🔵 In Progress (N/M completed)
 ```
 
-## 6. Report (작업 진행 중인 경우)
+**All tasks completed + checklist passed:**
+
+```markdown
+## Current Status: ✅ Implementation Complete
+
+### Completion Rate
+
+- Checklist: {M}/{M} (100%)
+```
+
+## 6. Report (When work is in progress)
 
 ```
-✅ 작업 완료: {task_name}
+✅ Task completed: {task_name}
 
-수행 내용:
-  - {변경 사항 1}
-  - {변경 사항 2}
+Work performed:
+  - {Change 1}
+  - {Change 2}
 
-남은 작업: {remaining_count}개
+Remaining tasks: {remaining_count}
   - {next_task_name}
   - ...
 
-다음 단계:
-  /do-task $1       - 다음 작업 실행
-  /do-progress $1   - 진행 상황 확인
+Next steps:
+  /do-task $1       - Execute next task
+  /do-progress $1   - Check progress
 ```

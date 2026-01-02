@@ -1,5 +1,5 @@
 ---
-description: 기능 구현을 위한 계획 수립 및 작업 파일 생성 (대화형)
+description: Create implementation plan and task files (interactive)
 allowed-tools: ["Bash", "Write", "Read", "Glob", "Grep"]
 model: claude-3-5-sonnet-20241022
 argument-hint: <feature-name>
@@ -7,48 +7,48 @@ argument-hint: <feature-name>
 
 # Feature Planning Protocol (Interactive Mode)
 
-**목표**: 사용자와 대화하며 상세 구현 계획을 수립하고, 세부 작업 파일까지 모두 생성합니다.
+**Goal**: Create a detailed implementation plan through conversation with the user, generating all task files.
 
 ## Input Parsing
 
-`$1` = 기능명 (feature_name)
+`$1` = feature_name
 
-- 띄어쓰기 대신 **하이픈(-)**을 사용하세요
-- 예: `auth-system`, `user-dashboard`, `payment-gateway`
+- Use **hyphens (-)** instead of spaces
+- Examples: `auth-system`, `user-dashboard`, `payment-gateway`
 
-## Step 1: 요구사항 수집 (Interactive)
+## Step 1: Requirements Gathering (Interactive)
 
-**기능명만 입력된 경우** (`$2`가 비어있음):
+**If only feature name is provided** (`$2` is empty):
 
-사용자에게 다음을 질문하십시오:
+Ask the user the following:
 
 ```
-📋 $1 기능을 계획합니다.
+📋 Planning the $1 feature.
 
-상세 요구사항을 알려주세요:
-- 어떤 기능이 필요한가요?
-- 주요 사용자 시나리오는?
-- 특별히 고려할 기술적 제약이 있나요?
+Please provide detailed requirements:
+- What functionality is needed?
+- What are the main user scenarios?
+- Any specific technical constraints to consider?
 ```
 
-**상세 요구사항이 함께 입력된 경우**:
+**If detailed requirements are provided**:
 
-- `$ARGUMENTS`에서 `$1`(기능명)을 제외한 나머지를 요구사항으로 사용
+- Use the remainder of `$ARGUMENTS` after `$1` as requirements
 
 ## Step 2: Context Loading
 
-1. 프로젝트 규칙 참조: `@CLAUDE.md` (기술 스택 확인)
-2. 현재 Git 상태 확인: `!git status`
-3. 관련 기존 코드 탐색: 요구사항과 관련된 파일들을 검색
+1. Reference project rules: `@CLAUDE.md` (check tech stack)
+2. Check current Git status: `!git status`
+3. Search for related existing code
 
 ## Step 3: Analysis & Planning
 
-사용자의 요구사항을 분석하고:
+Analyze user requirements and:
 
-- 구현에 필요한 파일 변경 목록 도출
-- 기존 코드와의 통합 방안 검토
-- 잠재적 위험 요소 식별
-- **구현 단계를 세부 작업으로 분할** (01, 02, 03...)
+- Derive list of files to be changed
+- Review integration approach with existing code
+- Identify potential risks
+- **Split implementation into subtasks** (01, 02, 03...)
 
 ## Step 4: Scaffolding
 
@@ -58,164 +58,164 @@ mkdir -p TODO/$1
 
 ## Step 5: Artifact Generation
 
-다음 파일들을 **모두 반드시** 생성하십시오:
+Generate **all** of the following files:
 
 ### A. TODO/$1/PLAN.md
 
 ```markdown
-# $1 구현 계획
+# $1 Implementation Plan
 
-## 개요
+## Overview
 
-{요구사항 요약}
+{Requirements summary}
 
-## 목표
+## Goals
 
-- [ ] 목표 1
-- [ ] 목표 2
+- [ ] Goal 1
+- [ ] Goal 2
 
-## 구현 단계
+## Implementation Phases
 
-### Phase 1: {단계명}
+### Phase 1: {Phase name}
 
-- 작업 파일: 01.md
-- 내용 요약
+- Task file: 01.md
+- Summary
 
-### Phase 2: {단계명}
+### Phase 2: {Phase name}
 
-- 작업 파일: 02.md
-- 내용 요약
+- Task file: 02.md
+- Summary
 
 ### Phase N: ...
 
-## 영향받는 파일
+## Affected Files
 
-- `path/to/file1.ts` - 변경 사유
+- `path/to/file1.ts` - Reason for change
 
-## 기술적 고려사항
+## Technical Considerations
 
-- 의존성, 호환성, 성능 등
+- Dependencies, compatibility, performance, etc.
 ```
 
 ### B. TODO/$1/requirements.md
 
 ```markdown
-# $1 요구사항 명세
+# $1 Requirements Specification
 
-## 원본 요청
+## Original Request
 
-{사용자가 입력한 요구사항 전체}
+{Full user requirements}
 
-## 분석된 요구사항
+## Analyzed Requirements
 
 1. ...
 2. ...
 
-## 수용 기준 (Acceptance Criteria)
+## Acceptance Criteria
 
-- [ ] 기준 1
-- [ ] 기준 2
+- [ ] Criterion 1
+- [ ] Criterion 2
 ```
 
 ### C. TODO/$1/checklist.md
 
 ```markdown
-# $1 품질 체크리스트
+# $1 Quality Checklist
 
-## 기능 요구사항
+## Functional Requirements
 
-- [ ] {요구사항에서 도출한 항목 1}
-- [ ] {요구사항에서 도출한 항목 2}
+- [ ] {Requirement derived item 1}
+- [ ] {Requirement derived item 2}
 - [ ] ...
 
-## 코드 품질
+## Code Quality
 
-- [ ] 린트 통과 (npm run lint)
-- [ ] 테스트 통과 (npm run test)
-- [ ] 타입 검사 통과
+- [ ] Lint passed (npm run lint)
+- [ ] Tests passed (npm run test)
+- [ ] Type check passed
 
-## 검증
+## Verification
 
-- [ ] 수동 테스트 완료
-- [ ] 엣지 케이스 처리 확인
+- [ ] Manual testing completed
+- [ ] Edge cases handled
 ```
 
 ### D. TODO/$1/progress.md
 
 ```markdown
-# $1 진행 상황
+# $1 Progress
 
-## 현재 상태: 🟡 계획 수립 완료
+## Current Status: 🟡 Planning Completed
 
-### 타임라인
+### Timeline
 
-- [{현재 날짜/시간}] Planning Completed. Ready to start.
+- [{current date/time}] Planning Completed. Ready to start.
 
-### 작업 현황
+### Task Status
 
-| 작업  | 상태    | 완료 시간 |
-| ----- | ------- | --------- |
-| 01.md | ⏳ 대기 | -         |
-| 02.md | ⏳ 대기 | -         |
-| ...   | ...     | ...       |
+| Task  | Status     | Completed At |
+| ----- | ---------- | ------------ |
+| 01.md | ⏳ Pending | -            |
+| 02.md | ⏳ Pending | -            |
+| ...   | ...        | ...          |
 
-### 완료율
+### Completion Rate
 
-- 체크리스트: 0/{총 항목 수} (0%)
+- Checklist: 0/{total items} (0%)
 ```
 
-### E. TODO/$1/01.md, 02.md, ... (세부 작업 파일)
+### E. TODO/$1/01.md, 02.md, ... (Task Files)
 
-**각 구현 단계마다 별도의 작업 파일을 생성하십시오:**
+**Create a separate task file for each implementation phase:**
 
 ```markdown
-# 작업 01: {작업 제목}
+# Task 01: {Task title}
 
-## 목표
+## Goal
 
-{이 작업에서 달성할 구체적인 목표}
+{Specific goal to achieve in this task}
 
-## 상세 지시사항
+## Detailed Instructions
 
-1. {구체적인 구현 단계 1}
-2. {구체적인 구현 단계 2}
+1. {Specific implementation step 1}
+2. {Specific implementation step 2}
 3. ...
 
-## 예상 변경 파일
+## Expected File Changes
 
-- `path/to/file.ts` - {변경 내용}
+- `path/to/file.ts` - {Change description}
 
-## 완료 기준
+## Completion Criteria
 
-- [ ] {이 작업의 완료 조건 1}
-- [ ] {이 작업의 완료 조건 2}
+- [ ] {Completion condition 1}
+- [ ] {Completion condition 2}
 
-## 참고사항
+## Notes
 
-- {주의할 점, 의존성 등}
+- {Cautions, dependencies, etc.}
 ```
 
-**작업 파일 작성 규칙:**
+**Task file writing rules:**
 
-- 각 작업은 독립적으로 실행 가능해야 함
-- 한 작업에서 너무 많은 것을 하지 않도록 적절히 분할
-- 이전 작업의 결과에 의존하는 경우 명시
+- Each task should be independently executable
+- Split appropriately to avoid too much in one task
+- Clearly state dependencies on previous tasks
 
 ## Step 6: Conclusion
 
 ```
-✅ 계획이 수립되었습니다.
+✅ Planning completed.
 
 📁 TODO/$1/
-├── PLAN.md         - 구현 계획
-├── requirements.md - 요구사항 명세
-├── checklist.md    - 품질 체크리스트 ({N}개 항목)
-├── progress.md     - 진행 상황
-├── 01.md           - {작업 1 제목}
-├── 02.md           - {작업 2 제목}
+├── PLAN.md         - Implementation plan
+├── requirements.md - Requirements specification
+├── checklist.md    - Quality checklist ({N} items)
+├── progress.md     - Progress tracking
+├── 01.md           - {Task 1 title}
+├── 02.md           - {Task 2 title}
 └── ...
 
-다음 명령어:
-  /do-task $1       - 작업 시작
-  /do-progress $1   - 진행 상황 확인
+Next commands:
+  /do-task $1       - Start tasks
+  /do-progress $1   - Check progress
 ```

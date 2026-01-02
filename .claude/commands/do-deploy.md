@@ -1,5 +1,5 @@
 ---
-description: 배포 지시 파일(DEPLOY.md)을 읽고 배포 프로세스를 실행
+description: Read deployment instructions (DEPLOY.md) and execute deployment process
 allowed-tools: ["Bash", "Read", "Write"]
 model: claude-3-5-sonnet-20241022
 argument-hint: [environment] [--init]
@@ -7,90 +7,90 @@ argument-hint: [environment] [--init]
 
 # Deployment Protocol
 
-**목표**: 프로젝트의 배포 지시 파일을 확인하고, 정의된 프로세스에 따라 배포를 실행합니다.
+**Goal**: Check project deployment instruction file and execute deployment according to defined process.
 
 ## Input Parsing
 
-- `$1` (선택): 배포 환경 지정 (production, staging, dev 등)
-- `--init`: DEPLOY.md 템플릿 생성
-- 환경 미지정 시 DEPLOY.md의 기본 환경 사용
+- `$1` (optional): Specify deployment environment (production, staging, dev, etc.)
+- `--init`: Generate DEPLOY.md template
+- If no environment specified, use default environment from DEPLOY.md
 
 ## Execution Steps
 
-### 1. 배포 지시 파일 확인
+### 1. Check Deployment Instruction File
 
-다음 순서로 배포 지시 파일을 검색하십시오:
+Search for deployment instruction file in this order:
 
 ```
-1. ./DEPLOY.md (프로젝트 루트)
+1. ./DEPLOY.md (project root)
 2. ./deploy/DEPLOY.md
 3. ./docs/DEPLOY.md
 4. ./.claude/DEPLOY.md
 ```
 
-### 2. 파일이 존재하지 않는 경우
+### 2. If File Does Not Exist
 
-**즉시 중단**하고 다음 메시지를 출력하십시오:
+**Stop immediately** and output the following message:
 
 ```
-⚠️  배포 지시 파일을 찾을 수 없습니다.
+⚠️  Deployment instruction file not found.
 
-배포를 실행하려면 DEPLOY.md 파일이 필요합니다.
-다음 위치 중 하나에 파일을 생성해주세요:
+A DEPLOY.md file is required to run deployment.
+Please create the file in one of these locations:
 
-  📄 ./DEPLOY.md (권장)
+  📄 ./DEPLOY.md (recommended)
   📄 ./deploy/DEPLOY.md
   📄 ./.claude/DEPLOY.md
 
-DEPLOY.md 템플릿을 생성하시겠습니까?
+Would you like to generate a DEPLOY.md template?
   /do-deploy --init
 ```
 
-### 3. --init 옵션이 있는 경우
+### 3. If --init Option Provided
 
-DEPLOY.md 템플릿을 생성하십시오:
+Generate DEPLOY.md template:
 
 ```markdown
-# 배포 가이드
+# Deployment Guide
 
-## 환경 설정
+## Environment Configuration
 
 ### Production
 
 - **URL**: https://example.com
-- **브랜치**: main
-- **자동 배포**: false
+- **Branch**: main
+- **Auto-deploy**: false
 
 ### Staging
 
 - **URL**: https://staging.example.com
-- **브랜치**: develop
-- **자동 배포**: true
+- **Branch**: develop
+- **Auto-deploy**: true
 
-## 사전 조건 (Pre-requisites)
+## Pre-requisites
 
-배포 전 다음 항목을 확인하세요:
+Verify the following before deployment:
 
-- [ ] 모든 테스트 통과 (`npm run test`)
-- [ ] 린트 검사 통과 (`npm run lint`)
-- [ ] 빌드 성공 (`npm run build`)
-- [ ] 환경 변수 설정 완료
+- [ ] All tests passed (`npm run test`)
+- [ ] Lint check passed (`npm run lint`)
+- [ ] Build successful (`npm run build`)
+- [ ] Environment variables configured
 
-## 배포 절차
+## Deployment Steps
 
-### 1. 빌드
+### 1. Build
 
 \`\`\`bash
 npm run build
 \`\`\`
 
-### 2. 테스트
+### 2. Test
 
 \`\`\`bash
 npm run test
 \`\`\`
 
-### 3. 배포 실행
+### 3. Execute Deployment
 
 \`\`\`bash
 
@@ -103,103 +103,103 @@ npm run deploy:prod
 npm run deploy:staging
 \`\`\`
 
-## 롤백 절차
+## Rollback Procedure
 
-문제 발생 시:
+If issues occur:
 \`\`\`bash
 
-# 이전 버전으로 롤백
+# Rollback to previous version
 
 npm run rollback
 \`\`\`
 
-## 배포 후 확인
+## Post-deployment Verification
 
-- [ ] 헬스체크 엔드포인트 확인
-- [ ] 주요 기능 수동 테스트
-- [ ] 에러 로그 모니터링
+- [ ] Verify health check endpoint
+- [ ] Manual test of key features
+- [ ] Monitor error logs
 ```
 
-### 4. 파일이 존재하는 경우
+### 4. If File Exists
 
-DEPLOY.md 파일을 읽고 다음을 수행하십시오:
+Read DEPLOY.md file and perform the following:
 
-#### 4.1 환경 확인
+#### 4.1 Environment Check
 
 ```
-🚀 배포 준비
+🚀 Preparing Deployment
 
-환경: {environment}
-브랜치: {current_branch}
-최신 커밋: {commit_hash} - {commit_message}
+Environment: {environment}
+Branch: {current_branch}
+Latest commit: {commit_hash} - {commit_message}
 
-배포 대상: {target_url}
+Target: {target_url}
 ```
 
-#### 4.2 사전 조건 검사
+#### 4.2 Pre-requisite Check
 
-DEPLOY.md의 "사전 조건" 섹션에 정의된 명령어들을 순차적으로 실행:
+Execute commands defined in "Pre-requisites" section of DEPLOY.md sequentially:
 
 ```bash
-# 예시
+# Example
 npm run test
 npm run lint
 npm run build
 ```
 
-**하나라도 실패하면 즉시 중단:**
+**If any fail, stop immediately:**
 
 ```
-❌ 사전 조건 검사 실패
+❌ Pre-requisite check failed
 
-실패한 단계: {step_name}
-오류 메시지: {error_message}
+Failed step: {step_name}
+Error message: {error_message}
 
-배포가 중단되었습니다. 위 오류를 해결한 후 다시 시도하세요.
+Deployment aborted. Please fix the above error and try again.
 ```
 
-#### 4.3 배포 실행
+#### 4.3 Execute Deployment
 
-DEPLOY.md의 "배포 절차" 섹션에 정의된 명령어를 실행:
-
-```
-📦 배포 진행 중...
-
-[1/3] 빌드 중... ✅
-[2/3] 테스트 실행 중... ✅
-[3/3] 배포 중... ✅
-```
-
-#### 4.4 배포 후 확인
-
-DEPLOY.md의 "배포 후 확인" 섹션의 체크리스트를 표시:
+Execute commands defined in "Deployment Steps" section of DEPLOY.md:
 
 ```
-✅ 배포 완료!
+📦 Deployment in progress...
 
-배포 후 확인사항:
-- [ ] 헬스체크 엔드포인트 확인
-- [ ] 주요 기능 수동 테스트
-- [ ] 에러 로그 모니터링
-
-배포 정보:
-  환경: {environment}
-  시간: {timestamp}
-  커밋: {commit_hash}
-  버전: {version}
+[1/3] Building... ✅
+[2/3] Running tests... ✅
+[3/3] Deploying... ✅
 ```
 
-### 5. 배포 기록
+#### 4.4 Post-deployment Verification
 
-배포 성공 시, 활성화된 TODO 디렉토리의 progress.md에 기록:
+Display checklist from "Post-deployment Verification" section of DEPLOY.md:
+
+```
+✅ Deployment Complete!
+
+Post-deployment checklist:
+- [ ] Verify health check endpoint
+- [ ] Manual test of key features
+- [ ] Monitor error logs
+
+Deployment info:
+  Environment: {environment}
+  Time: {timestamp}
+  Commit: {commit_hash}
+  Version: {version}
+```
+
+### 5. Deployment Record
+
+On successful deployment, record in active TODO directory's progress.md:
 
 ```markdown
-- [{현재 날짜/시간}] 🚀 Deployed to {environment}: {commit_hash}
+- [{current date/time}] 🚀 Deployed to {environment}: {commit_hash}
 ```
 
 ## Safety Rules
 
-- **Production 배포 전 반드시 확인 프롬프트 표시**
-- **main/master 브랜치가 아닌 경우 경고**
-- **uncommitted changes가 있으면 배포 차단**
-- **DEPLOY.md에 정의되지 않은 명령어는 실행하지 않음**
+- **Always show confirmation prompt before Production deployment**
+- **Warn if not on main/master branch**
+- **Block deployment if uncommitted changes exist**
+- **Never execute commands not defined in DEPLOY.md**
