@@ -2,22 +2,23 @@
 description: Identify and execute next task automatically, review checklist on completion
 allowed-tools: ["Bash", "Write", "Read", "Edit", "Ls"]
 model: claude-sonnet-4-5-20250929
-argument-hint: <feature-name>
 ---
 
 # Auto Task Execution
 
-## 0. Update Session Phase
-Read `.claude/.do-session` and update `phase` to `"executing"` if it's `"planning"`.
-This enables the quality gate hook for checklist verification on session end.
+## 0. Read Session
+1. Read `.claude/.do-session` JSON, extract `feature` field
+2. If session not found → show "No active session. Start: /do-plan <name>" and exit
+3. Update `phase` to `"executing"` if it's `"planning"`
+   This enables the quality gate hook for checklist verification on session end.
 
 ## 1. Load Context
 - `@CLAUDE.md` - coding conventions
-- `@TODO/$1/PLAN.md` - plan
-- `@TODO/$1/progress.md` - current state
+- `@TODO/{feature}/PLAN.md` - plan
+- `@TODO/{feature}/progress.md` - current state
 
 ## 2. Find Next Task
-1. `ls TODO/$1` to list files
+1. `ls TODO/{feature}` to list files
 2. Check progress.md for completed tasks (✅)
 3. Pick next numbered task file (01.md → 02.md → ...)
 
@@ -32,7 +33,7 @@ If tasks remain:
 
 ## 4. All Tasks Done → Checklist Review
 
-### 4.1 Load `@TODO/$1/checklist.md`
+### 4.1 Load `@TODO/{feature}/checklist.md`
 
 ### 4.2 Verify Items
 Code Quality:
@@ -52,7 +53,7 @@ Loop: fix → verify → repeat until all pass.
 2. Report:
 ```
 All done! Tasks: N, Checklist: M items passed.
-Next: /do-commit $1 | /do-deploy
+Next: /do-commit | /do-deploy
 ```
 
 ## 5. Update Status
@@ -64,5 +65,5 @@ Complete: `## Status: ✅ Complete`, Rate: 100%
 Done: {task}
 Changes: {list}
 Remaining: {count} tasks
-Next: /do-task $1 | /do-progress $1
+Next: /do-task | /do-progress
 ```

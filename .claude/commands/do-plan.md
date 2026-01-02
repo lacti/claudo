@@ -2,14 +2,15 @@
 description: Create implementation plan and task files (interactive or from plan mode)
 allowed-tools: ["Bash", "Write", "Read", "Glob", "Grep"]
 model: claude-opus-4-5-20251101
-argument-hint: [<request>] [--from-plan]
+argument-hint: [<request>]
 ---
 
 # Feature Planning
 
 ## Input
-- `$ARGUMENTS` = request description or `--from-plan` flag
-- `--from-plan`: Convert from latest plan mode file
+- `$ARGUMENTS` = request description (optional)
+- If empty: Shows recent plan files from `~/.claude/plans/` for selection
+- If provided: Uses the text as requirements
 - Feature name is auto-generated from request or plan content (use hyphens: `auth-system`)
 
 ## Step 0: Session Check
@@ -25,33 +26,46 @@ argument-hint: [<request>] [--from-plan]
 
 ## Step 1: Gather Requirements
 
-### If --from-plan flag:
-```bash
-PLAN_FILE=$(ls -t ~/.claude/plans/*.md 2>/dev/null | head -1)
-```
-If not found: `Plan not found. Complete planning in plan mode first.`
-Else: Read and extract title, overview, steps, files from PLAN_FILE.
-Generate `FEATURE_NAME` from plan title (kebab-case, e.g., `auth-system`).
-
-### If no --from-plan:
-**CRITICAL: You MUST ask the user for requirements FIRST.**
-
-Check if `$ARGUMENTS` is empty or too brief (less than 10 characters).
-If so, you MUST:
-1. Ask the user:
-```
-Please describe:
-- What functionality do you need?
-- Main use cases/scenarios?
-- Any technical constraints?
-```
-2. **STOP and WAIT for user response.**
-3. Do NOT proceed to Step 2 until user provides requirements.
-
-If `$ARGUMENTS` contains sufficient description, use it as the requirement.
+### If $ARGUMENTS has content (10+ characters):
+Use it as the requirement directly.
 Generate `FEATURE_NAME` from the request content (kebab-case, 2-4 words).
+Proceed to Step 2.
 
-Only after receiving user's response, proceed to Step 2.
+### If $ARGUMENTS is empty or too brief:
+1. Check for recent plan files:
+```bash
+ls -t ~/.claude/plans/*.md 2>/dev/null | head -4
+```
+
+2. **If plan files found:**
+   Show a numbered list with preview (first 3 lines of each file):
+   ```
+   Recent plans found:
+   1. curious-happy-penguin.md (2h ago)
+      # User Authentication System
+      ## Overview
+      Implement OAuth2...
+   2. silly-jumping-koala.md (1d ago)
+      # API Rate Limiting
+      ...
+   [N] Enter new requirements
+   ```
+   **STOP and WAIT for user selection.**
+   - If user selects 1-4: Read that plan file, extract title/overview/steps/files, generate `FEATURE_NAME` from plan title
+   - If user selects N: Ask for requirements (see below)
+
+3. **If no plan files found OR user selected N:**
+   Ask the user:
+   ```
+   Please describe:
+   - What functionality do you need?
+   - Main use cases/scenarios?
+   - Any technical constraints?
+   ```
+   **STOP and WAIT for user response.**
+   Generate `FEATURE_NAME` from user's response (kebab-case, 2-4 words).
+
+Only after gathering requirements, proceed to Step 2.
 
 ## Step 2: Context
 1. Check `@CLAUDE.md` for tech stack
@@ -94,7 +108,7 @@ Task: 01.md, Summary
 ## Technical Notes
 {dependencies, risks}
 ## Source
-{If --from-plan: Only filename (e.g., `plan-name.md`) and modified time. NEVER include full path or home directory.}
+{If from plan file: Only filename (e.g., `plan-name.md`) and modified time. NEVER include full path or home directory.}
 ```
 
 ### 5.2 Write requirements.md
@@ -170,6 +184,6 @@ Expected output must include: PLAN.md, requirements.md, checklist.md, progress.m
 ## Step 8: Done
 ```
 Done. TODO/{FEATURE_NAME}/ created with PLAN.md, requirements.md, checklist.md, progress.md, and task files.
-{If --from-plan: "Converted from {filename only, no path}"}
+{If from plan file: "Converted from {filename only, no path}"}
 Next: /do-task {FEATURE_NAME} | /do-progress {FEATURE_NAME}
 ```

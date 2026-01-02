@@ -43,10 +43,15 @@ git add -A && git commit -m "{message}"
 ```
 With --amend: `git commit --amend -m "{message}"`
 
-### 6. Record (if $1)
-Add to `TODO/$1/progress.md`: `- [{now}] Commit: {hash} - {subject}`
+### 6. Resolve Feature Name
+1. If `$1` provided → use `$1`
+2. Else → read `.claude/.do-session` JSON, extract `feature` field
+3. If no session and no `$1` → skip recording
 
-### 7. Report
+### 7. Record (if feature resolved)
+Add to `TODO/{feature}/progress.md`: `- [{now}] Commit: {hash} - {subject}`
+
+### 8. Report
 ```
 Done! Hash: {hash}, Branch: {branch}
 Stats: N files, +X -Y
