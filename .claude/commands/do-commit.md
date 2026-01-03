@@ -23,7 +23,7 @@ Format: `<type>(<scope>): <subject>` + body + footer
 Example: `feat(auth): Add JWT authentication`
 
 ### 3. Review & Confirm
-Show: Type, Scope, Files, Message.
+Show: Type, Scope, Files (including TODO/ files), Message.
 Ask: "Proceed?"
 
 ### 4. Commit
@@ -31,6 +31,11 @@ Ask: "Proceed?"
 git add -A && git commit -m "{message}"
 # Or with --amend if requested
 ```
+**IMPORTANT**: `git add -A` must include ALL changes:
+- Source code changes
+- TODO/ directory files (PLAN.md, progress.md, checklist.md, task files)
+- Configuration files
+- Do NOT exclude any tracked or untracked files
 
 ### 5. Record
 1. Resolve Feature: `$1` or from `.claude/.do-session`.
